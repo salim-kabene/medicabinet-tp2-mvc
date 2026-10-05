@@ -11,3 +11,5 @@
 # Fichiers du système
 .DS_Store
 Thumbs.db
+
+/vendor/
