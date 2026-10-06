@@ -1,8 +1,5 @@
 <?php
 
 require_once __DIR__ . "/vendor/autoload.php";
-
-use App\Controllers\HomeController;
-
-$controller = new HomeController();
-$controller->index();
+require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/routes/web.php";
