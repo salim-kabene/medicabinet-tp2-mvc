@@ -2,11 +2,15 @@
 
 namespace App\Controllers;
 
+use App\Providers\View;
+
 class HomeController
 {
     public function index(): void
     {
-        // À toi : afficher « Bienvenue dans MédiCabinet » avec echo.
-        echo "Bienvenue a Medicabinet";
+        View::render("home", [
+            "pageTitle" => "Accueil — MédiCabinet",
+            "message" => "Bienvenue dans MédiCabinet",
+        ]);
     }
 }

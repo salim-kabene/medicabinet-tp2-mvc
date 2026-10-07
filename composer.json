@@ -6,5 +6,8 @@
             "App\\Routes\\": "routes/",
             "App\\Providers\\": "providers/"
         }
+    },
+    "require": {
+        "twig/twig": "^3.0"
     }
 }
