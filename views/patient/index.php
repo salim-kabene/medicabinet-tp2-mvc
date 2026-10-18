@@ -42,6 +42,7 @@
                         <th scope="col">Date de naissance</th>
                         <th scope="col">Téléphone</th>
                         <th scope="col">Courriel</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
 
@@ -62,10 +63,16 @@
                         <td>
                             {{ patient.email|default('Non renseigné') }}
                         </td>
+                        <td>
+                            <a class="data-table__action" href="{{ base }}/patient/show?id={{ patient.id }}"
+                                aria-label="Voir la fiche de {{ patient.first_name }} {{ patient.last_name }}">
+                                Voir la fiche
+                            </a>
+                        </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="4">
+                        <td colspan="5">
                             Aucun patient enregistré.
                         </td>
                     </tr>
