@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Patient;
 use App\Providers\View;
 use PDOException;
@@ -64,12 +65,32 @@ class PatientController
             return;
         }
 
+        try {
+            $appointmentModel = new Appointment();
+            $appointments = $appointmentModel->selectByPatient($id);
+        } catch (PDOException $exception) {
+            http_response_code(500);
+
+            exit("Le service est temporairement indisponible.");
+        }
+
         View::render("patient/show", [
             "pageTitle" => $patient["first_name"]
                 . " "
                 . $patient["last_name"]
                 . " — MédiCabinet",
+
             "patient" => $patient,
+
+            "appointments" => $appointments,
+
+            "statusLabels" => [
+                "planned" => "Planifié",
+                "confirmed" => "Confirmé",
+                "completed" => "Terminé",
+                "cancelled" => "Annulé",
+                "absent" => "Absent",
+            ],
         ]);
     }
 }

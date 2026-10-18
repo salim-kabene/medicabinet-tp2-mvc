@@ -52,6 +52,75 @@
                 </div>
             </div>
         </header>
+        <section class="patient-profile__history" aria-labelledby="history-title">
+            <h2 id="history-title">
+                Historique des rendez-vous
+                ({{ appointments|length }})
+            </h2>
+
+            <div class="table-wrapper" role="region" aria-label="Historique des rendez-vous du patient" tabindex="0">
+                <table class="data-table">
+                    <caption class="sr-only">
+                        Rendez-vous de
+                        {{ patient.first_name }}
+                        {{ patient.last_name }}
+                    </caption>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Date et heure</th>
+                            <th scope="col">Médecin</th>
+                            <th scope="col">Services</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td>
+                                {{ appointment.starts_at|date('d/m/Y à H:i') }}
+                            </td>
+
+                            <td>
+                                {{ appointment.doctor_first_name }}
+                                {{ appointment.doctor_last_name }}
+                            </td>
+
+                            <td>
+                                {{ appointment.service_names|default('Aucun service') }}
+                            </td>
+
+                            <td>
+                                <span class="status-badge status-badge--{{ appointment.status }}">
+                                    {{ statusLabels[appointment.status]|default(appointment.status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="data-table__actions">
+                                    <button type="button" class="data-table__action" disabled>
+                                        Modifier
+                                    </button>
+
+                                    <button type="button" class="data-table__action data-table__action--danger"
+                                        disabled>
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5">
+                                Aucun rendez-vous enregistré pour ce patient.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 </body>
 

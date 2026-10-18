@@ -6,6 +6,11 @@ body {
   color: var(--color-text);
   background: var(--color-canvas);
 }
+/* Actions temporairement indisponibles */
+.data-table__action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 a {
   color: var(--color-link);
   text-decoration: none;
