@@ -12,6 +12,9 @@
         <p class="home__description">
             Gérez les patients et les rendez-vous de votre cabinet médical.
         </p>
+        <p>
+            <a href="{{ base }}/patients">Consulter les patients</a>
+        </p>
     </main>
 </body>
 
