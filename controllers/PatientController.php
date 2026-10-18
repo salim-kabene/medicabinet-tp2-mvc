@@ -15,6 +15,7 @@ class PatientController
             $patients = $model->select("last_name");
         } catch (PDOException $exception) {
             http_response_code(500);
+
             exit("Le service est temporairement indisponible.");
         }
 
@@ -22,6 +23,53 @@ class PatientController
             "pageTitle" => "Patients — MédiCabinet",
             "patients" => $patients,
             "patientCount" => count($patients),
+        ]);
+    }
+
+    public function show(array $data = []): void
+    {
+        $id = filter_var(
+            $data["id"] ?? null,
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1]]
+        );
+
+        if ($id === false) {
+            http_response_code(400);
+
+            View::render("error", [
+                "pageTitle" => "Demande invalide — MédiCabinet",
+                "message" => "L’identifiant du patient est invalide.",
+            ]);
+
+            return;
+        }
+
+        try {
+            $model = new Patient();
+            $patient = $model->selectId($id);
+        } catch (PDOException $exception) {
+            http_response_code(500);
+            exit("Le service est temporairement indisponible.");
+        }
+
+        if ($patient === false) {
+            http_response_code(404);
+
+            View::render("error", [
+                "pageTitle" => "Patient introuvable — MédiCabinet",
+                "message" => "Ce patient est introuvable.",
+            ]);
+
+            return;
+        }
+
+        View::render("patient/show", [
+            "pageTitle" => $patient["first_name"]
+                . " "
+                . $patient["last_name"]
+                . " — MédiCabinet",
+            "patient" => $patient,
         ]);
     }
 }

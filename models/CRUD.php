@@ -44,4 +44,14 @@ abstract class CRUD extends \PDO
 
         return $stmt->fetchAll();
     }
+    final public function selectId(int|string $value): array|false
+    {
+        $sql = "SELECT * FROM $this->table WHERE $this->primaryKey = :value";
+
+        $stmt = $this->prepare($sql);
+        $stmt->bindValue(":value", $value);
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
 }
