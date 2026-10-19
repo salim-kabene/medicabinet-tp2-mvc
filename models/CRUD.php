@@ -44,6 +44,7 @@ abstract class CRUD extends \PDO
 
         return $stmt->fetchAll();
     }
+
     final public function selectId(int|string $value): array|false
     {
         $sql = "SELECT * FROM $this->table WHERE $this->primaryKey = :value";
@@ -53,5 +54,12 @@ abstract class CRUD extends \PDO
         $stmt->execute();
 
         return $stmt->fetch();
+    }
+
+    final public function countAll(): int
+    {
+        $sql = "SELECT COUNT(*) FROM $this->table";
+        $stmt = $this->query($sql);
+        return (int) $stmt->fetchColumn();
     }
 }
