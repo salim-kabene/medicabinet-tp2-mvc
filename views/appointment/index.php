@@ -55,7 +55,41 @@
                 <p class="stats__value">{{ patientCount }}</p>
             </div>
         </section>
+        <form class="filters" action="{{ base }}/appointments" method="get">
+            <div class="filters__field">
+                <label class="filters__label" for="filter-date">
+                    Date
+                </label>
 
+                <input class="filters__input" type="date" id="filter-date" name="date" value="{{ date }}">
+            </div>
+
+            <div class="filters__field">
+                <label class="filters__label" for="filter-status">
+                    Statut
+                </label>
+
+                <select class="filters__select" id="filter-status" name="status">
+                    <option value="">Tous les statuts</option>
+
+                    {% for value, label in statusLabels %}
+                    <option value="{{ value }}" {% if status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filters__actions">
+                <button class="button button--primary" type="submit">
+                    <span class="icon icon--filter" aria-hidden="true"></span>
+                    Filtrer
+                </button>
+                <a class="button button--secondary" href="{{ base }}/appointments">
+                    Réinitialiser
+                </a>
+            </div>
+        </form>
         <div class="appointments__table-wrapper" role="region" aria-label="Liste des rendez-vous" tabindex="0">
             <table class="data-table">
                 <caption class="data-table__caption">
