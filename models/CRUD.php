@@ -129,4 +129,16 @@ abstract class CRUD extends \PDO
 
         return $stmt->execute();
     }
+
+    final public function delete(int|string $value): bool
+    {
+        $sql = "DELETE FROM $this->table
+            WHERE $this->primaryKey = :value";
+
+        $stmt = $this->prepare($sql);
+        $stmt->bindValue(":value", $value);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
+    }
 }

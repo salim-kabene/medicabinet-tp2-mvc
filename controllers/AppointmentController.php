@@ -502,4 +502,108 @@ class AppointmentController
 
         $this->save($data, $id);
     }
+
+    public function confirmDelete(array $data = []): void
+    {
+        $id = filter_var(
+            $data["id"] ?? null,
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1]]
+        );
+
+        if ($id === false) {
+            http_response_code(400);
+
+            View::render("error", [
+                "pageTitle" => "Demande invalide — MédiCabinet",
+                "message" => "L’identifiant du rendez-vous est invalide.",
+            ]);
+
+            return;
+        }
+
+        try {
+            $model = new Appointment();
+            $appointment = $model->findWithDetails($id);
+        } catch (PDOException $exception) {
+            http_response_code(500);
+
+            exit("Le service est temporairement indisponible.");
+        }
+
+        if ($appointment === false) {
+            http_response_code(404);
+
+            View::render("error", [
+                "pageTitle" => "Rendez-vous introuvable — MédiCabinet",
+                "message" => "Ce rendez-vous est introuvable.",
+            ]);
+
+            return;
+        }
+
+        View::render("appointment/delete", [
+            "pageTitle" => "Supprimer un rendez-vous — MédiCabinet",
+            "appointment" => $appointment,
+            "csrfToken" => $_SESSION["csrf_token"],
+        ]);
+    }
+
+    public function delete(array $data, array $query = []): void
+    {
+        $token = $data["csrf_token"] ?? "";
+
+        if (
+            !is_string($token)
+            || !hash_equals($_SESSION["csrf_token"], $token)
+        ) {
+            http_response_code(403);
+
+            View::render("error", [
+                "pageTitle" => "Demande refusée — MédiCabinet",
+                "message" => "Le formulaire a expiré. Veuillez le rouvrir.",
+            ]);
+
+            return;
+        }
+
+        $id = filter_var(
+            $data["id"] ?? null,
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1]]
+        );
+
+        if ($id === false) {
+            http_response_code(400);
+
+            View::render("error", [
+                "pageTitle" => "Demande invalide — MédiCabinet",
+                "message" => "L’identifiant du rendez-vous est invalide.",
+            ]);
+
+            return;
+        }
+
+        try {
+            $model = new Appointment();
+            $deleted = $model->delete($id);
+        } catch (PDOException $exception) {
+            http_response_code(500);
+
+            exit("Le rendez-vous n’a pas pu être supprimé.");
+        }
+
+        if (!$deleted) {
+            http_response_code(404);
+
+            View::render("error", [
+                "pageTitle" => "Rendez-vous introuvable — MédiCabinet",
+                "message" => "Ce rendez-vous est introuvable.",
+            ]);
+
+            return;
+        }
+
+        View::redirect("appointments?success=deleted");
+    }
 }

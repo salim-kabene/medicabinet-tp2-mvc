@@ -29,6 +29,10 @@
         <p class="alert alert--success" role="status">
             Les modifications ont été enregistrées.
         </p>
+        {% elseif success == 'deleted' %}
+        <p class="alert alert--success" role="status">
+            Le rendez-vous a été supprimé.
+        </p>
         {% endif %}
         <p>
             <a href="{{ base }}/home">Retour à l’accueil</a>
@@ -150,9 +154,11 @@
                                     Modifier
                                 </a>
 
-                                <button class="data-table__action data-table__action--danger" type="button" disabled>
+                                <a class="data-table__action data-table__action--danger"
+                                    href="{{ base }}/appointment/delete?id={{ appointment.id }}"
+                                    aria-label="Supprimer le rendez-vous numéro {{ appointment.id }}">
                                     Supprimer
-                                </button>
+                                </a>
                             </div>
                         </td>
                     </tr>

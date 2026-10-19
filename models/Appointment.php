@@ -23,7 +23,7 @@ class Appointment extends CRUD
         );
     }
 
-    public function selectWithDetails(string $date = "", string $status = "", ?int $patientId = null): array
+    public function selectWithDetails(string $date = "", string $status = "", ?int $patientId = null, ?int $appointmentId = null): array
     {
         $conditions = [];
 
@@ -37,6 +37,10 @@ class Appointment extends CRUD
 
         if ($patientId !== null) {
             $conditions[] = "appointments.patient_id = :patient_id";
+        }
+
+        if ($appointmentId !== null) {
+            $conditions[] = "appointments.id = :appointment_id";
         }
 
         $where = "";
@@ -100,6 +104,14 @@ class Appointment extends CRUD
             $stmt->bindValue(":patient_id", $patientId, \PDO::PARAM_INT);
         }
 
+        if ($appointmentId !== null) {
+            $stmt->bindValue(
+                ":appointment_id",
+                $appointmentId,
+                \PDO::PARAM_INT
+            );
+        }
+
         $stmt->execute();
         return $stmt->fetchAll();
     }
@@ -159,15 +171,11 @@ class Appointment extends CRUD
     public function selectServiceIds(int $appointmentId): array
     {
         $appointmentService = new AppointmentService($this);
-
         return $appointmentService->selectIds($appointmentId);
     }
 
-    public function updateWithServices(
-        int $appointmentId,
-        array $data,
-        array $serviceIds
-    ): bool {
+    public function updateWithServices(int $appointmentId, array $data, array $serviceIds): bool
+    {
         $this->beginTransaction();
 
         try {
@@ -215,5 +223,17 @@ class Appointment extends CRUD
 
             throw $exception;
         }
+    }
+
+    public function findWithDetails(int $id): array|false
+    {
+        $appointments = $this->selectWithDetails(
+            "",
+            "",
+            null,
+            $id
+        );
+
+        return $appointments[0] ?? false;
     }
 }

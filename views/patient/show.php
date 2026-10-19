@@ -109,10 +109,11 @@
                                         Modifier
                                     </a>
 
-                                    <button type="button" class="data-table__action data-table__action--danger"
-                                        disabled>
+                                    <a class="data-table__action data-table__action--danger"
+                                        href="{{ base }}/appointment/delete?id={{ appointment.id }}"
+                                        aria-label="Supprimer le rendez-vous numéro {{ appointment.id }}">
                                         Supprimer
-                                    </button>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
