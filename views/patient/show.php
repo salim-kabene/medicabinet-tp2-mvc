@@ -103,9 +103,11 @@
                             </td>
                             <td>
                                 <div class="data-table__actions">
-                                    <button type="button" class="data-table__action" disabled>
+                                    <a class="data-table__action"
+                                        href="{{ base }}/appointment/edit?id={{ appointment.id }}"
+                                        aria-label="Modifier le rendez-vous numéro {{ appointment.id }}">
                                         Modifier
-                                    </button>
+                                    </a>
 
                                     <button type="button" class="data-table__action data-table__action--danger"
                                         disabled>

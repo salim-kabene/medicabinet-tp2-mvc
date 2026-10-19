@@ -25,6 +25,10 @@
         <p class="alert alert--success" role="status">
             Le rendez-vous a été enregistré.
         </p>
+        {% elseif success == 'updated' %}
+        <p class="alert alert--success" role="status">
+            Les modifications ont été enregistrées.
+        </p>
         {% endif %}
         <p>
             <a href="{{ base }}/home">Retour à l’accueil</a>
@@ -141,9 +145,10 @@
 
                         <td class="data-table__cell">
                             <div class="data-table__actions">
-                                <button class="data-table__action" type="button" disabled>
+                                <a class="data-table__action" href="{{ base }}/appointment/edit?id={{ appointment.id }}"
+                                    aria-label="Modifier le rendez-vous numéro {{ appointment.id }}">
                                     Modifier
-                                </button>
+                                </a>
 
                                 <button class="data-table__action data-table__action--danger" type="button" disabled>
                                     Supprimer

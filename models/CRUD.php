@@ -88,4 +88,45 @@ abstract class CRUD extends \PDO
         $stmt->execute();
         return (int) $this->lastInsertId();
     }
+
+    final public function update(array $data, int|string $id): bool
+    {
+        $allowedFields = array_fill_keys($this->fillable, "");
+
+        $data = array_intersect_key($data, $allowedFields);
+
+        unset($data[$this->primaryKey]);
+
+        if (empty($data)) {
+            throw new \InvalidArgumentException(
+                "Aucune donnée autorisée à modifier."
+            );
+        }
+
+        $assignments = [];
+
+        foreach ($data as $key => $value) {
+            $assignments[] = "$key = :$key";
+        }
+
+        $fields = implode(", ", $assignments);
+
+        $sql = "UPDATE $this->table
+            SET $fields
+            WHERE $this->primaryKey = :_id";
+
+        $stmt = $this->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            $type = $value === null
+                ? \PDO::PARAM_NULL
+                : \PDO::PARAM_STR;
+
+            $stmt->bindValue(":$key", $value, $type);
+        }
+
+        $stmt->bindValue(":_id", $id);
+
+        return $stmt->execute();
+    }
 }

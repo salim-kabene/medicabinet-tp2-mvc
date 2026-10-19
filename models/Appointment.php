@@ -155,4 +155,65 @@ class Appointment extends CRUD
             throw $exception;
         }
     }
+
+    public function selectServiceIds(int $appointmentId): array
+    {
+        $appointmentService = new AppointmentService($this);
+
+        return $appointmentService->selectIds($appointmentId);
+    }
+
+    public function updateWithServices(
+        int $appointmentId,
+        array $data,
+        array $serviceIds
+    ): bool {
+        $this->beginTransaction();
+
+        try {
+            $stmt = $this->prepare(
+                "SELECT id
+             FROM appointments
+             WHERE id = :id
+             FOR UPDATE"
+            );
+
+            $stmt->bindValue(
+                ":id",
+                $appointmentId,
+                \PDO::PARAM_INT
+            );
+
+            $stmt->execute();
+
+            if ($stmt->fetchColumn() === false) {
+                $this->rollBack();
+
+                return false;
+            }
+
+            $this->update($data, $appointmentId);
+
+            $appointmentService = new AppointmentService($this);
+
+            $appointmentService->deleteByAppointment($appointmentId);
+
+            foreach ($serviceIds as $serviceId) {
+                $appointmentService->insert(
+                    $appointmentId,
+                    $serviceId
+                );
+            }
+
+            $this->commit();
+
+            return true;
+        } catch (\Throwable $exception) {
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
+
+            throw $exception;
+        }
+    }
 }
