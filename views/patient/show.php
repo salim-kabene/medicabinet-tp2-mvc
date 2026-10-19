@@ -51,6 +51,10 @@
                     </ul>
                 </div>
             </div>
+            <a class="button button--primary" href="{{ base }}/appointment/create?patient_id={{ patient.id }}">
+                <span class="icon icon--plus" aria-hidden="true"></span>
+                Planifier un rendez-vous
+            </a>
         </header>
         <section class="patient-profile__history" aria-labelledby="history-title">
             <h2 id="history-title">

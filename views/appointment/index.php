@@ -16,11 +16,10 @@
                 </p>
             </div>
 
-            <button class="button button--primary" type="button" disabled>
+            <a class="button button--primary" href="{{ base }}/appointment/create">
                 <span class="icon icon--plus" aria-hidden="true"></span>
-
                 Planifier un rendez-vous
-            </button>
+            </a>
         </header>
 
         <p>
