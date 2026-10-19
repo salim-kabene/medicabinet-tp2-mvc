@@ -15,6 +15,11 @@
         <p>
             <a href="{{ base }}/patients">Consulter les patients</a>
         </p>
+        <p>
+            <a href="{{ base }}/appointments">
+                Consulter les rendez-vous
+            </a>
+        </p>
     </main>
 </body>
 
