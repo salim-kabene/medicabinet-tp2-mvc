@@ -21,7 +21,11 @@
                 Planifier un rendez-vous
             </a>
         </header>
-
+        {% if success == 'created' %}
+        <p class="alert alert--success" role="status">
+            Le rendez-vous a été enregistré.
+        </p>
+        {% endif %}
         <p>
             <a href="{{ base }}/home">Retour à l’accueil</a>
         </p>

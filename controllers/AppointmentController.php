@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Providers\Validator;
 use App\Models\Doctor;
 use App\Models\Service;
 use App\Models\Appointment;
@@ -78,6 +79,7 @@ class AppointmentController
             "statusLabels" => $statusLabels,
             "date" => $date,
             "status" => $status,
+            "success" => $data["success"] ?? "",
         ]);
     }
 
@@ -150,7 +152,211 @@ class AppointmentController
             "csrfToken" => $_SESSION["csrf_token"],
             "formAction" => BASE . "/appointment/create",
             "submitLabel" => "Enregistrer le rendez-vous",
-            "canSubmit" => false,
+            "canSubmit" => true,
         ]);
+    }
+
+    public function store(array $data, array $query = []): void
+    {
+        $csrfToken = $data["csrf_token"] ?? "";
+
+        if (
+            !is_string($csrfToken)
+            || !hash_equals($_SESSION["csrf_token"], $csrfToken)
+        ) {
+            http_response_code(403);
+
+            View::render("error", [
+                "pageTitle" => "Demande refusée — MédiCabinet",
+                "message" => "Le formulaire a expiré. Veuillez le rouvrir.",
+            ]);
+
+            return;
+        }
+
+        $statusLabels = [
+            "planned" => "Planifié",
+            "confirmed" => "Confirmé",
+            "completed" => "Terminé",
+            "cancelled" => "Annulé",
+            "absent" => "Absent",
+        ];
+
+        $values = [];
+        $errors = [];
+
+        foreach (["patient_id", "doctor_id", "date", "time", "status", "reason"] as $field) {
+            $value = $data[$field] ?? "";
+
+            if (!is_string($value)) {
+                $errors[$field] = "La valeur du champ est invalide.";
+                $value = "";
+            }
+
+            $values[$field] = trim($value);
+        }
+
+        $validator = new Validator();
+
+        $validator->field("patient_id",  $values["patient_id"],  "Patient")->required()->int();
+        $validator->field("doctor_id", $values["doctor_id"], "Médecin")->required()->int();
+        $validator->field("date", $values["date"], "La date")->required();
+        $validator->field("time", $values["time"], "L’heure")->required();
+        $validator->field("status", $values["status"], "Le statut")->required();
+        $validator->field("reason", $values["reason"], "Le motif")->max(500);
+
+        $errors = array_merge($errors, $validator->getErrors());
+
+        if (!isset($errors["date"])) {
+            $validDate = false;
+
+            if (
+                preg_match(
+                    "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/D",
+                    $values["date"]
+                ) === 1
+            ) {
+                [$year, $month, $day] = explode("-", $values["date"]);
+                $validDate = checkdate((int) $month, (int) $day, (int) $year);
+            }
+
+            if (!$validDate) {
+                $errors["date"] = "La date est invalide.";
+            }
+        }
+
+        if (
+            !isset($errors["time"])
+            && preg_match(
+                "/^([01][0-9]|2[0-3]):[0-5][0-9]$/D",
+                $values["time"]
+            ) !== 1
+        ) {
+            $errors["time"] = "L’heure est invalide.";
+        }
+
+        if (
+            !isset($errors["status"])
+            && !array_key_exists($values["status"], $statusLabels)
+        ) {
+            $errors["status"] = "Le statut est invalide.";
+        }
+
+        try {
+            $patientModel = new Patient();
+            $patients = $patientModel->select("last_name");
+
+            $doctorModel = new Doctor();
+            $doctors = $doctorModel->select("last_name");
+
+            $serviceModel = new Service();
+            $services = $serviceModel->select("name");
+        } catch (PDOException $exception) {
+            http_response_code(500);
+            exit("Le service est temporairement indisponible.");
+        }
+
+        if (
+            !isset($errors["patient_id"])
+            && !in_array(
+                (int) $values["patient_id"],
+                array_column($patients, "id")
+            )
+        ) {
+            $errors["patient_id"] = "Le patient est introuvable.";
+        }
+
+        if (
+            !isset($errors["doctor_id"])
+            && !in_array(
+                (int) $values["doctor_id"],
+                array_column($doctors, "id")
+            )
+        ) {
+            $errors["doctor_id"] = "Le médecin est introuvable.";
+        }
+
+        $selectedServices = [];
+        $submittedServices = $data["services"] ?? [];
+
+        $validServiceIds = array_map("intval", array_column($services, "id"));
+
+        if (!is_array($submittedServices)) {
+            $errors["services"] = "La sélection des services est invalide.";
+        } else {
+            foreach ($submittedServices as $value) {
+                $serviceId = is_string($value)
+                    ? filter_var(
+                        $value,
+                        FILTER_VALIDATE_INT,
+                        ["options" => ["min_range" => 1]]
+                    )
+                    : false;
+
+                if (
+                    $serviceId === false
+                    || !in_array($serviceId, $validServiceIds, true)
+                ) {
+                    $errors["services"] = "Un des services sélectionnés est invalide.";
+                    continue;
+                }
+
+                $selectedServices[] = $serviceId;
+            }
+        }
+
+        $selectedServices = array_values(array_unique($selectedServices));
+
+        if (empty($selectedServices)) {
+            $errors["services"] = "Sélectionnez au moins un service valide.";
+        }
+
+        if (!empty($errors)) {
+            http_response_code(422);
+
+            View::render("appointment/create", [
+                "pageTitle" => "Planifier un rendez-vous — MédiCabinet",
+                "heading" => "Planifier un rendez-vous",
+                "patients" => $patients,
+                "doctors" => $doctors,
+                "services" => $services,
+                "statusLabels" => $statusLabels,
+                "values" => $values,
+                "selectedServices" => $selectedServices,
+                "errors" => $errors,
+                "csrfToken" => $_SESSION["csrf_token"],
+                "formAction" => BASE . "/appointment/create",
+                "submitLabel" => "Enregistrer le rendez-vous",
+                "canSubmit" => true,
+            ]);
+
+            return;
+        }
+
+        $record = [
+            "patient_id" => (int) $values["patient_id"],
+            "doctor_id" => (int) $values["doctor_id"],
+            "starts_at" => $values["date"]
+                . " "
+                . $values["time"]
+                . ":00",
+            "status" => $values["status"],
+            "reason" => $values["reason"] === "" ? null : $values["reason"],
+        ];
+
+        try {
+            $appointmentModel = new Appointment();
+
+            $appointmentModel->createWithServices(
+                $record,
+                $selectedServices
+            );
+        } catch (PDOException $exception) {
+            http_response_code(500);
+
+            exit("Le rendez-vous n’a pas pu être enregistré.");
+        }
+
+        View::redirect("appointments?success=created");
     }
 }

@@ -10,6 +10,7 @@ class Route
     {
         self::$routes[] = ["url" => $url, "controller" => $controller, "method" => "GET"];
     }
+
     public static function dispatch(): void
     {
         $url = $_SERVER["REQUEST_URI"];
@@ -27,11 +28,20 @@ class Route
 
                 $controllerInstance = new $controllerName();
 
+                $queryParams = [];
+
                 if (isset($urlSegments[1])) {
                     parse_str($urlSegments[1], $queryParams);
-                    $controllerInstance->$methodName($queryParams);
+                }
+
+                if ($method === "POST") {
+                    $controllerInstance->$methodName($_POST, $queryParams);
                 } else {
-                    $controllerInstance->$methodName();
+                    if (isset($urlSegments[1])) {
+                        $controllerInstance->$methodName($queryParams);
+                    } else {
+                        $controllerInstance->$methodName();
+                    }
                 }
 
                 return;
@@ -40,5 +50,14 @@ class Route
 
         http_response_code(404);
         echo "404 - Page introuvable";
+    }
+
+    public static function post(string $url, string $controller): void
+    {
+        self::$routes[] = [
+            "url" => $url,
+            "controller" => $controller,
+            "method" => "POST",
+        ];
     }
 }

@@ -130,4 +130,29 @@ class Appointment extends CRUD
 
         return (int) $stmt->fetchColumn();
     }
+
+    public function createWithServices(array $data, array $serviceIds): int
+    {
+        $this->beginTransaction();
+
+        try {
+            $appointmentId = $this->insert($data);
+            $appointmentService = new AppointmentService($this);
+
+            foreach ($serviceIds as $serviceId) {
+                $appointmentService->insert(
+                    $appointmentId,
+                    $serviceId
+                );
+            }
+
+            $this->commit();
+            return $appointmentId;
+        } catch (\Throwable $exception) {
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
+            throw $exception;
+        }
+    }
 }

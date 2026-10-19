@@ -10,5 +10,6 @@ Route::get("/patient/show", "PatientController@show");
 
 Route::get("/appointments", "AppointmentController@index");
 Route::get("/appointment/create", "AppointmentController@create");
+Route::post("/appointment/create", "AppointmentController@store");
 
 Route::dispatch();

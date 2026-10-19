@@ -62,4 +62,30 @@ abstract class CRUD extends \PDO
         $stmt = $this->query($sql);
         return (int) $stmt->fetchColumn();
     }
+
+    final public function insert(array $data): int
+    {
+        $allowedFields = array_fill_keys($this->fillable, "");
+
+        $data = array_intersect_key($data, $allowedFields);
+
+        if (empty($data)) {
+            throw new \InvalidArgumentException("Aucune donnée autorisée à enregistrer.");
+        }
+
+        $fieldNames = implode(", ", array_keys($data));
+        $placeholders = ":" . implode(", :", array_keys($data));
+
+        $sql = "INSERT INTO $this->table ($fieldNames) VALUES ($placeholders)";
+
+        $stmt = $this->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            $type = $value === null ? \PDO::PARAM_NULL : \PDO::PARAM_STR;
+            $stmt->bindValue(":$key", $value, $type);
+        }
+
+        $stmt->execute();
+        return (int) $this->lastInsertId();
+    }
 }

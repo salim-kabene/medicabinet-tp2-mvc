@@ -17,4 +17,10 @@ class View
 
         echo $twig->render($template . ".php", $data);
     }
+
+    public static function redirect(string $url): void
+    {
+        header("Location: " . BASE . "/" . $url, true, 303);
+        exit;
+    }
 }
