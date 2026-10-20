@@ -39,6 +39,23 @@ abstract class CRUD extends \PDO
         if ($field === null) {
             $field = $this->primaryKey;
         }
+
+        // Accepter uniquement un nom de colonne simple.
+        if (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/D', $field) !== 1) {
+            throw new \InvalidArgumentException(
+                "Le champ de tri est invalide."
+            );
+        }
+
+        $order = strtoupper(trim($order));
+
+        // Limiter la direction du tri aux deux valeurs SQL attendues.
+        if (!in_array($order, ["ASC", "DESC"], true)) {
+            throw new \InvalidArgumentException(
+                "L’ordre de tri est invalide."
+            );
+        }
+
         $sql = "SELECT * FROM $this->table ORDER BY $field $order";
         $stmt = $this->query($sql);
 
