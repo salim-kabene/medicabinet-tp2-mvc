@@ -2,6 +2,8 @@
 
 namespace App\Routes;
 
+use App\Providers\View;
+
 class Route
 {
     private static array $routes = [];
@@ -49,7 +51,12 @@ class Route
         }
 
         http_response_code(404);
-        echo "404 - Page introuvable";
+        http_response_code(404);
+
+        View::render("error", [
+            "pageTitle" => "Page introuvable — MédiCabinet",
+            "message" => "La page demandée n’existe pas ou son adresse a changé.",
+        ]);
     }
 
     public static function post(string $url, string $controller): void

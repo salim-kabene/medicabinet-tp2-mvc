@@ -14,7 +14,7 @@ class View
 
         $twig->addGlobal("asset", ASSET);
         $twig->addGlobal("base", BASE);
-
+        $twig->addGlobal("httpStatus", http_response_code());
         echo $twig->render($template . ".php", $data);
     }
 
