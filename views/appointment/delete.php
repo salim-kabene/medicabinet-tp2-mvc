@@ -6,79 +6,87 @@
 </head>
 
 <body>
-    <main class="appointment-delete">
-        <a class="back-link" href="{{ base }}/appointments">
-            Retour aux rendez-vous
-        </a>
+    <div class="app-layout">
+        {{ include('layouts/sidebar.php', {
+            activePage: 'patients'
+        }) }}
 
-        <section class="confirmation" aria-labelledby="confirmation-title">
-            <span class="confirmation__symbol" aria-hidden="true">
-                <span class="icon icon--trash"></span>
-            </span>
+        <div class="app-layout__content">
+            <main class="appointment-delete">
+                <a class="back-link" href="{{ base }}/appointments">
+                    Retour aux rendez-vous
+                </a>
 
-            <h1 class="confirmation__title" id="confirmation-title">
-                Supprimer ce rendez-vous ?
-            </h1>
+                <section class="confirmation" aria-labelledby="confirmation-title">
+                    <span class="confirmation__symbol" aria-hidden="true">
+                        <span class="icon icon--trash"></span>
+                    </span>
 
-            <p class="confirmation__description">
-                Cette action est définitive.
-            </p>
+                    <h1 class="confirmation__title" id="confirmation-title">
+                        Supprimer ce rendez-vous ?
+                    </h1>
 
-            <dl class="confirmation__details">
-                <div>
-                    <dt>Patient</dt>
-                    <dd>
-                        {{ appointment.patient_first_name }}
-                        {{ appointment.patient_last_name }}
-                    </dd>
-                </div>
+                    <p class="confirmation__description">
+                        Cette action est définitive.
+                    </p>
 
-                <div>
-                    <dt>Médecin</dt>
-                    <dd>
-                        {{ appointment.doctor_first_name }}
-                        {{ appointment.doctor_last_name }}
-                    </dd>
-                </div>
+                    <dl class="confirmation__details">
+                        <div>
+                            <dt>Patient</dt>
+                            <dd>
+                                {{ appointment.patient_first_name }}
+                                {{ appointment.patient_last_name }}
+                            </dd>
+                        </div>
 
-                <div>
-                    <dt>Date et heure</dt>
-                    <dd>
-                        {{ appointment.starts_at|date('d/m/Y à H:i') }}
-                    </dd>
-                </div>
+                        <div>
+                            <dt>Médecin</dt>
+                            <dd>
+                                {{ appointment.doctor_first_name }}
+                                {{ appointment.doctor_last_name }}
+                            </dd>
+                        </div>
 
-                <div>
-                    <dt>Services</dt>
-                    <dd>
-                        {{ appointment.service_names|default('Aucun service') }}
-                    </dd>
-                </div>
-            </dl>
+                        <div>
+                            <dt>Date et heure</dt>
+                            <dd>
+                                {{ appointment.starts_at|date('d/m/Y à H:i') }}
+                            </dd>
+                        </div>
 
-            <p class="confirmation__warning">
-                Le patient, le médecin et les services seront conservés.
-            </p>
+                        <div>
+                            <dt>Services</dt>
+                            <dd>
+                                {{ appointment.service_names|default('Aucun service') }}
+                            </dd>
+                        </div>
+                    </dl>
 
-            <form class="confirmation__form" action="{{ base }}/appointment/delete" method="post">
-                <input type="hidden" name="id" value="{{ appointment.id }}">
+                    <p class="confirmation__warning">
+                        Le patient, le médecin et les services seront conservés.
+                    </p>
 
-                <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+                    <form class="confirmation__form" action="{{ base }}/appointment/delete" method="post">
+                        <input type="hidden" name="id" value="{{ appointment.id }}">
 
-                <div class="confirmation__actions">
-                    <a class="button button--secondary" href="{{ base }}/appointments">
-                        Conserver le rendez-vous
-                    </a>
+                        <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
 
-                    <button class="button button--danger" type="submit">
-                        <span class="icon icon--trash" aria-hidden="true"></span>
+                        <div class="confirmation__actions">
+                            <a class="button button--secondary" href="{{ base }}/appointments">
+                                Conserver le rendez-vous
+                            </a>
 
-                        Supprimer définitivement
-                    </button>
-                </div>
-            </form>
-        </section>
-    </main>
+                            <button class="button button--danger" type="submit">
+                                <span class="icon icon--trash" aria-hidden="true"></span>
+
+                                Supprimer définitivement
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </main>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -6,14 +6,35 @@
 </head>
 
 <body>
-    <main>
-        <h1>{{ pageTitle }}</h1>
+    <main class="error-page">
+        <section class="error-page__card" aria-labelledby="error-title">
+            <span class="error-page__icon" aria-hidden="true">
+                <span class="icon icon--info"></span>
+            </span>
 
-        <p>{{ message }}</p>
+            <p class="error-page__code">
+                <span class="sr-only">Erreur </span>
+                {{ httpStatus|default(500) }}
+            </p>
 
-        <a class="back-link" href="{{ base }}/patients">
-            Retour aux patients
-        </a>
+            <h1 class="error-page__title" id="error-title">
+                {{ pageTitle|replace({' — MédiCabinet': ''}) }}
+            </h1>
+
+            <p class="error-page__message">
+                {{ message }}
+            </p>
+
+            <div class="error-page__actions">
+                <a class="button button--primary" href="{{ base }}/">
+                    Retour à l’accueil
+                </a>
+
+                <a class="button button--secondary" href="{{ base }}/appointments">
+                    Voir les rendez-vous
+                </a>
+            </div>
+        </section>
     </main>
 </body>
 
