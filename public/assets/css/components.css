@@ -6,6 +6,18 @@ body {
   color: var(--color-text);
   background: var(--color-canvas);
 }
+/* Erreurs des champs du formulaire */
+.form-field__error {
+    margin: 0.375rem 0 0;
+    color: var(--color-danger);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.form-field__control[aria-invalid="true"],
+.appointment-form__services[aria-invalid="true"] {
+    border-color: var(--color-danger);
+}
 /* Actions temporairement indisponibles */
 .data-table__action:disabled {
     opacity: 0.5;
@@ -100,15 +112,42 @@ h2 {
   opacity: 0.55;
   cursor: not-allowed;
 }
+/* Liens de retour */
 .back-link,
 .appointment-editor__back,
 .appointment-delete__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  font-weight: 600;
-  margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    min-height: 2.75rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+
+    color: var(--color-link);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+}
+
+.back-link:hover,
+.appointment-editor__back:hover,
+.appointment-delete__back:hover {
+    color: var(--color-primary-hover);
+    background-color: var(--color-active);
+    border-color: var(--color-primary);
+}
+
+.back-link:focus-visible,
+.appointment-editor__back:focus-visible,
+.appointment-delete__back:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
 }
 
 /* Icônes SVG locales et décoratives */
@@ -274,13 +313,22 @@ h2 {
   color: #b41d30;
   --status-icon: url("../icons/cross.svg");
 }
+/* Compteur des patients */
 .count-badge {
-  display: inline-flex;
-  padding: 7px 15px;
-  border-radius: 99px;
-  background: #e8f0f5;
-  font-weight: 600;
-  white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 0.5rem 0.875rem;
+
+    color: var(--color-text);
+    background-color: #e8f0f5;
+    border-radius: 99px;
+
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
 }
 
 /* Champs */
