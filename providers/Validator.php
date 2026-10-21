@@ -21,23 +21,25 @@ class Validator
 
     public function required()
     {
-        if ($this->value === "") {
+        if (trim($this->value) === "") {
             $this->errors[$this->key] = "$this->name est obligatoire.";
         }
 
         return $this;
     }
 
-    public function int()
+    public function int(?int $minimum = null): self
     {
-        if (
-            $this->value !== ""
-            && filter_var(
-                $this->value,
-                FILTER_VALIDATE_INT
-            ) === false
-        ) {
+        if (trim($this->value) === "") {
+            return $this;
+        }
+
+        $number = filter_var($this->value, FILTER_VALIDATE_INT);
+
+        if ($number === false) {
             $this->errors[$this->key] = "$this->name doit être un entier.";
+        } elseif ($minimum !== null && $number < $minimum) {
+            $this->errors[$this->key] = "$this->name doit être supérieur ou égal à $minimum.";
         }
 
         return $this;

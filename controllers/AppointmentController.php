@@ -66,8 +66,8 @@ class AppointmentController
             $patientModel = new Patient();
             $patientCount = $patientModel->countAll();
         } catch (PDOException $exception) {
-            http_response_code(500);
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         View::render("appointment/index", [
@@ -95,8 +95,8 @@ class AppointmentController
             $serviceModel = new Service();
             $services = $serviceModel->select("name");
         } catch (PDOException $exception) {
-            http_response_code(500);
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         $preselectedPatient = "";
@@ -156,7 +156,7 @@ class AppointmentController
         ]);
     }
 
-    public function save(array $data, ?int $appointmentId = null): void
+    private function save(array $data, ?int $appointmentId = null): void
     {
         $csrfToken = $data["csrf_token"] ?? "";
 
@@ -208,8 +208,8 @@ class AppointmentController
 
         $validator = new Validator();
 
-        $validator->field("patient_id",  $values["patient_id"],  "Patient")->required()->int();
-        $validator->field("doctor_id", $values["doctor_id"], "Médecin")->required()->int();
+        $validator->field("patient_id",  $values["patient_id"],  "Le patient")->required()->int(1);
+        $validator->field("doctor_id", $values["doctor_id"], "Le médecin")->required()->int(1);
         $validator->field("date", $values["date"], "La date")->required();
         $validator->field("time", $values["time"], "L’heure")->required();
         $validator->field("status", $values["status"], "Le statut")->required();
@@ -227,7 +227,8 @@ class AppointmentController
                 ) === 1
             ) {
                 [$year, $month, $day] = explode("-", $values["date"]);
-                $validDate = checkdate((int) $month, (int) $day, (int) $year);
+                $validDate = (int) $year >= 1000
+                    && checkdate((int) $month, (int) $day, (int) $year);
             }
 
             if (!$validDate) {
@@ -262,8 +263,8 @@ class AppointmentController
             $serviceModel = new Service();
             $services = $serviceModel->select("name");
         } catch (PDOException $exception) {
-            http_response_code(500);
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         if (
@@ -388,9 +389,8 @@ class AppointmentController
                 $success = "updated";
             }
         } catch (PDOException $exception) {
-            http_response_code(500);
-
-            exit("Le rendez-vous n’a pas pu être enregistré.");
+            $this->databaseError($exception);
+            return;
         }
 
         View::redirect("appointments?success=" . $success);
@@ -441,9 +441,8 @@ class AppointmentController
 
             $selectedServices = $appointmentModel->selectServiceIds($id);
         } catch (PDOException $exception) {
-            http_response_code(500);
-
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         View::render("appointment/edit", [
@@ -526,9 +525,8 @@ class AppointmentController
             $model = new Appointment();
             $appointment = $model->findWithDetails($id);
         } catch (PDOException $exception) {
-            http_response_code(500);
-
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         if ($appointment === false) {
@@ -588,9 +586,8 @@ class AppointmentController
             $model = new Appointment();
             $deleted = $model->delete($id);
         } catch (PDOException $exception) {
-            http_response_code(500);
-
-            exit("Le rendez-vous n’a pas pu être supprimé.");
+            $this->databaseError($exception);
+            return;
         }
 
         if (!$deleted) {
@@ -605,5 +602,17 @@ class AppointmentController
         }
 
         View::redirect("appointments?success=deleted");
+    }
+    private function databaseError(PDOException $exception): void
+    {
+        // Détail technique réservé au journal du serveur.
+        error_log("Erreur SQL dans MédiCabinet : " . $exception->getMessage());
+
+        http_response_code(500);
+
+        View::render("error", [
+            "pageTitle" => "Service indisponible — MédiCabinet",
+            "message" => "L’opération n’a pas pu être effectuée. " . "Veuillez réessayer plus tard.",
+        ]);
     }
 }
