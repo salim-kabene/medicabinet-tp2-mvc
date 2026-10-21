@@ -51,7 +51,6 @@ class Route
         }
 
         http_response_code(404);
-        http_response_code(404);
 
         View::render("error", [
             "pageTitle" => "Page introuvable — MédiCabinet",
