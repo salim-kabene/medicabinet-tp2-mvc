@@ -109,7 +109,7 @@
                     </div>
                 </form>
                 <div class="appointments__table-wrapper" role="region" aria-label="Liste des rendez-vous" tabindex="0">
-                    <table class="data-table">
+                    <table class="data-table{% if appointments is empty %} data-table--empty{% endif %}">
                         <caption class="data-table__caption">
                             Liste des rendez-vous
                         </caption>
@@ -172,9 +172,37 @@
                                 </td>
                             </tr>
                             {% else %}
-                            <tr>
-                                <td colspan="6">
-                                    Aucun rendez-vous enregistré.
+                            <tr class="data-table__row data-table__row--empty">
+                                <td class="data-table__empty-cell" colspan="6">
+                                    <div class="data-table__empty">
+                                        <span class="data-table__empty-icon" aria-hidden="true">
+                                            <span class="icon icon--calendar"></span>
+                                        </span>
+
+                                        {% if date or status %}
+                                        <p class="data-table__empty-title">
+                                            Aucun rendez-vous ne correspond à ces filtres
+                                        </p>
+                                        <p class="data-table__empty-description">
+                                            Modifiez la date ou le statut, ou réinitialisez les filtres pour afficher tous les rendez-vous.
+                                        </p>
+                                        <a class="button button--secondary" href="{{ base }}/appointments">
+                                            <span class="icon icon--arrow-left" aria-hidden="true"></span>
+                                            Réinitialiser les filtres
+                                        </a>
+                                        {% else %}
+                                        <p class="data-table__empty-title">
+                                            Aucun rendez-vous enregistré
+                                        </p>
+                                        <p class="data-table__empty-description">
+                                            Planifiez un premier rendez-vous en choisissant un patient, un médecin et les services souhaités.
+                                        </p>
+                                        <a class="button button--primary" href="{{ base }}/appointment/create">
+                                            <span class="icon icon--plus" aria-hidden="true"></span>
+                                            Planifier un rendez-vous
+                                        </a>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
