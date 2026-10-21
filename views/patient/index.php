@@ -23,18 +23,18 @@
                     </div>
 
                     <span class="count-badge">
-                        {{ patientCount }}
-                        {% if patientCount > 1 %}
-                        patients
-                        {% else %}
-                        patient
-                        {% endif %}
+                        <span class="icon icon--users" aria-hidden="true"></span>
+                        <span>
+                            {{ patientCount }}
+                            {{ patientCount == 1 ? 'patient' : 'patients' }}
+                        </span>
                     </span>
                 </header>
 
-                <p>
-                    <a href="{{ base }}/home">Retour à l’accueil</a>
-                </p>
+                <a class="back-link" href="{{ base }}/">
+                    <span class="icon icon--arrow-left" aria-hidden="true"></span>
+                    Retour à l’accueil
+                </a>
 
                 <div class="table-wrapper" role="region" aria-label="Liste des patients" tabindex="0">
                     <table class="data-table">

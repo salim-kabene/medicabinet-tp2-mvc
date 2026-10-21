@@ -14,9 +14,9 @@
         <div class="app-layout__content">
             <main class="patient-profile">
                 <a class="back-link" href="{{ base }}/patients">
+                    <span class="icon icon--arrow-left" aria-hidden="true"></span>
                     Retour aux patients
                 </a>
-
                 <header class="patient-profile__header">
                     <div class="patient-profile__identity">
                         <div>

@@ -14,10 +14,10 @@
         <div class="app-layout__content">
             <main class="appointment-editor">
                 <header class="appointment-editor__header">
-                    <a class="appointment-editor__back" href="{{ base }}/appointments">
+                    <a class="back-link" href="{{ base }}/appointments">
+                        <span class="icon icon--arrow-left" aria-hidden="true"></span>
                         Retour aux rendez-vous
                     </a>
-
                     <h1 class="appointment-editor__title"> {{ heading }} </h1>
                 </header>
 

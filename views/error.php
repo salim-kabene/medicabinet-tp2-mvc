@@ -27,9 +27,9 @@
 
             <div class="error-page__actions">
                 <a class="button button--primary" href="{{ base }}/">
+                    <span class="icon icon--arrow-left" aria-hidden="true"></span>
                     Retour à l’accueil
                 </a>
-
                 <a class="button button--secondary" href="{{ base }}/appointments">
                     Voir les rendez-vous
                 </a>

@@ -40,9 +40,10 @@
                     Le rendez-vous a été supprimé.
                 </p>
                 {% endif %}
-                <p>
-                    <a href="{{ base }}/home">Retour à l’accueil</a>
-                </p>
+                <a class="back-link" href="{{ base }}/">
+                    <span class="icon icon--arrow-left" aria-hidden="true"></span>
+                    Retour à l’accueil
+                </a>
 
                 <section class="stats" aria-label="Statistiques du cabinet">
                     <div class="stats__card">
