@@ -15,9 +15,8 @@ class PatientController
             $model = new Patient();
             $patients = $model->select("last_name");
         } catch (PDOException $exception) {
-            http_response_code(500);
-
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         View::render("patient/index", [
@@ -50,8 +49,8 @@ class PatientController
             $model = new Patient();
             $patient = $model->selectId($id);
         } catch (PDOException $exception) {
-            http_response_code(500);
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         if ($patient === false) {
@@ -69,9 +68,8 @@ class PatientController
             $appointmentModel = new Appointment();
             $appointments = $appointmentModel->selectByPatient($id);
         } catch (PDOException $exception) {
-            http_response_code(500);
-
-            exit("Le service est temporairement indisponible.");
+            $this->databaseError($exception);
+            return;
         }
 
         View::render("patient/show", [
@@ -91,6 +89,19 @@ class PatientController
                 "cancelled" => "Annulé",
                 "absent" => "Absent",
             ],
+        ]);
+    }
+
+    private function databaseError(PDOException $exception): void
+    {
+        // Informations techniques réservées au journal du serveur.
+        error_log("Erreur SQL dans PatientController : " . $exception->getMessage());
+        http_response_code(500);
+
+        View::render("error", [
+            "pageTitle" => "Service indisponible — MédiCabinet",
+            "message" => "L’opération n’a pas pu être effectuée. "
+                . "Veuillez réessayer plus tard.",
         ]);
     }
 }
