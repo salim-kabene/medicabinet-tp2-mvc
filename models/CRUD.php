@@ -158,4 +158,27 @@ abstract class CRUD extends \PDO
 
         return $stmt->rowCount() > 0;
     }
+
+    final public function unique(string $field, string $value): array|false
+    {
+        if (!in_array($field, $this->fillable ?? [], true)) {
+            throw new \InvalidArgumentException(
+                "Le champ de recherche est invalide."
+            );
+        }
+
+        $sql = "SELECT * FROM $this->table WHERE `$field` = :value";
+
+        $stmt = $this->prepare($sql);
+        $stmt->bindValue(":value", $value);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll();
+
+        if (count($results) === 1) {
+            return $results[0];
+        }
+
+        return false;
+    }
 }
