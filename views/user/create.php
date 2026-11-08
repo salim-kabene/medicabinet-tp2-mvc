@@ -20,7 +20,11 @@
 
                     <h1>Créer un utilisateur</h1>
                 </header>
-
+                {% if success %}
+                <p class="alert alert--success" role="status">
+                    {{ success }}
+                </p>
+                {% endif %}
                 {% if errors %}
                 <div class="appointment-form__errors" role="alert">
                     <p>Veuillez corriger les erreurs suivantes :</p>
@@ -61,7 +65,7 @@
                         <div class="form-field">
                             <label for="password">Mot de passe</label>
                             <input class="form-field__control" type="password" id="password" name="password"
-                                autocomplete="new-password" required>
+                                autocomplete="new-password" minlength="8" required>
                         </div>
 
                         <div class="form-field">
@@ -105,7 +109,7 @@
                             Annuler
                         </a>
 
-                        <button class="button button--primary" type="submit" disabled>
+                        <button class="button button--primary" type="submit">
                             Créer le compte
                         </button>
                     </div>
