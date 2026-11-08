@@ -17,5 +17,6 @@ Route::post("/appointment/create", "AppointmentController@store");
 Route::post("/appointment/edit", "AppointmentController@update");
 Route::post("/appointment/delete", "AppointmentController@delete");
 
+Route::get("/user/create", "UserController@create");
 
 Route::dispatch();
