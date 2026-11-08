@@ -20,4 +20,7 @@ Route::post("/appointment/delete", "AppointmentController@delete");
 Route::get("/user/create", "UserController@create");
 Route::post("/user/create", "UserController@store");
 
+Route::get("/login", "AuthController@index");
+Route::post("/login", "AuthController@store");
+
 Route::dispatch();
