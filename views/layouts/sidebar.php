@@ -30,6 +30,23 @@
                     Patients
                 </a>
             </li>
+            {% if session.user_id is defined %}
+            <li class="sidebar__item">
+                <form action="{{ base }}/logout" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+                    <button class="button button--secondary" type="submit">
+                        Se déconnecter
+                    </button>
+                </form>
+            </li>
+            {% else %}
+            <li class="sidebar__item">
+                <a class="sidebar__link" href="{{ base }}/login">
+                    Se connecter
+                </a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
 </aside>

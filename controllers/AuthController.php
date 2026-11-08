@@ -104,4 +104,44 @@ class AuthController
 
         View::redirect("home");
     }
+
+    public function delete(array $data): void
+    {
+        $token = $data["csrf_token"] ?? "";
+
+        if (
+            !is_string($token)
+            || !hash_equals($_SESSION["csrf_token"], $token)
+        ) {
+            http_response_code(403);
+
+            View::render("error", [
+                "pageTitle" => "Demande refusée — MédiCabinet",
+                "message" => "Le formulaire a expiré. Veuillez réessayer.",
+            ]);
+
+            return;
+        }
+
+        // Vider les informations de l’utilisateur connecté.
+        $_SESSION = [];
+
+        // Supprimer le cookie de session du navigateur.
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+
+            setcookie(session_name(), "", [
+                "expires" => time() - 3600,
+                "path" => $params["path"],
+                "domain" => $params["domain"],
+                "secure" => $params["secure"],
+                "httponly" => $params["httponly"],
+                "samesite" => $params["samesite"],
+            ]);
+        }
+
+        session_destroy();
+
+        View::redirect("login");
+    }
 }
