@@ -8,10 +8,15 @@ use App\Models\Service;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Providers\View;
+use App\Providers\Auth;
 use PDOException;
 
 class AppointmentController
 {
+    public function __construct()
+    {
+        Auth::privilege(1);
+    }
     public function index(array $data = []): void
     {
         $statusLabels = [

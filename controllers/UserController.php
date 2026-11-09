@@ -8,9 +8,14 @@ use App\Providers\View;
 use PDOException;
 use App\Models\Users;
 use App\Providers\Validator;
+use App\Providers\Auth;
 
 class UserController
 {
+    public function __construct()
+    {
+        Auth::privilege(1);
+    }
     public function create(): void
     {
         $this->renderForm();

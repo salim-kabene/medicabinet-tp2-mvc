@@ -6,9 +6,14 @@ use App\Models\Appointment;
 use App\Models\Patient;
 use App\Providers\View;
 use PDOException;
+use App\Providers\Auth;
 
 class PatientController
 {
+    public function __construct()
+    {
+        Auth::privilege(1);
+    }
     public function index(): void
     {
         try {
