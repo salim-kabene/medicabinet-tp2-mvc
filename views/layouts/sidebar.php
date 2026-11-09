@@ -7,6 +7,7 @@
 
     <nav class="sidebar__nav" aria-label="Navigation principale">
         <ul class="sidebar__list">
+            {% if guest %}
             <li class="sidebar__item">
                 <a class="sidebar__link {% if activePage == 'home' %}sidebar__link--active{% endif %}"
                     href="{{ base }}/" {% if activePage == 'home' %}aria-current="page" {% endif %}>
@@ -15,6 +16,7 @@
                 </a>
             </li>
 
+            {% elseif session.privilege_id == 1 %}
             <li class="sidebar__item">
                 <a class="sidebar__link {% if activePage == 'appointments' %}sidebar__link--active{% endif %}"
                     href="{{ base }}/appointments" {% if activePage == 'appointments' %}aria-current="page" {% endif %}>
@@ -30,20 +32,21 @@
                     Patients
                 </a>
             </li>
-            {% if session.user_id is defined %}
-            <li class="sidebar__item">
-                <form action="{{ base }}/logout" method="post">
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-                    <button class="button button--secondary" type="submit">
-                        Se déconnecter
-                    </button>
-                </form>
-            </li>
-            {% else %}
             <li class="sidebar__item">
-                <a class="sidebar__link" href="{{ base }}/login">
-                    Se connecter
+                <a class="sidebar__link {% if activePage == 'users' %}sidebar__link--active{% endif %}"
+                    href="{{ base }}/user/create" {% if activePage == 'users' %}aria-current="page" {% endif %}>
+                    <span class="icon icon--plus" aria-hidden="true"></span>
+                    Créer un compte
+                </a>
+            </li>
+
+            {% elseif session.privilege_id == 2 %}
+            <li class="sidebar__item">
+                <a class="sidebar__link {% if activePage == 'client' %}sidebar__link--active{% endif %}"
+                    href="{{ base }}/client" {% if activePage == 'client' %}aria-current="page" {% endif %}>
+                    <span class="icon icon--user" aria-hidden="true"></span>
+                    Mon espace
                 </a>
             </li>
             {% endif %}

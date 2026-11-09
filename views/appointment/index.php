@@ -12,6 +12,7 @@
         }) }}
 
         <div class="app-layout__content">
+            {{ include('layouts/account.php') }}
             <main class="appointments">
                 <header class="appointments__header">
                     <div class="appointments__heading">
@@ -40,10 +41,6 @@
                     Le rendez-vous a été supprimé.
                 </p>
                 {% endif %}
-                <a class="back-link" href="{{ base }}/">
-                    <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                    Retour à l’accueil
-                </a>
 
                 <section class="stats" aria-label="Statistiques du cabinet">
                     <div class="stats__card">
@@ -184,7 +181,8 @@
                                             Aucun rendez-vous ne correspond à ces filtres
                                         </p>
                                         <p class="data-table__empty-description">
-                                            Modifiez la date ou le statut, ou réinitialisez les filtres pour afficher tous les rendez-vous.
+                                            Modifiez la date ou le statut, ou réinitialisez les filtres pour afficher
+                                            tous les rendez-vous.
                                         </p>
                                         <a class="button button--secondary" href="{{ base }}/appointments">
                                             <span class="icon icon--arrow-left" aria-hidden="true"></span>
@@ -195,7 +193,8 @@
                                             Aucun rendez-vous enregistré
                                         </p>
                                         <p class="data-table__empty-description">
-                                            Planifiez un premier rendez-vous en choisissant un patient, un médecin et les services souhaités.
+                                            Planifiez un premier rendez-vous en choisissant un patient, un médecin et
+                                            les services souhaités.
                                         </p>
                                         <a class="button button--primary" href="{{ base }}/appointment/create">
                                             <span class="icon icon--plus" aria-hidden="true"></span>

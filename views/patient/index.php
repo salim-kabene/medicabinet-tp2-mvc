@@ -12,6 +12,7 @@
         }) }}
 
         <div class="app-layout__content">
+            {{ include('layouts/account.php') }}
             <main class="patients">
                 <header class="patients__header">
                     <div>
@@ -30,11 +31,6 @@
                         </span>
                     </span>
                 </header>
-
-                <a class="back-link" href="{{ base }}/">
-                    <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                    Retour à l’accueil
-                </a>
 
                 <div class="table-wrapper" role="region" aria-label="Liste des patients" tabindex="0">
                     <table class="data-table">
