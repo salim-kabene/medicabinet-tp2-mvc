@@ -12,6 +12,7 @@
         }) }}
 
         <div class="app-layout__content">
+            {{ include('layouts/account.php') }}
             <main class="appointment-editor">
                 <header class="appointment-editor__header">
                     <a class="back-link" href="{{ base }}/appointments">

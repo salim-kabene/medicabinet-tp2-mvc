@@ -102,6 +102,14 @@ class AuthController
             return;
         }
 
+        if ($_SESSION["privilege_id"] === 1) {
+            View::redirect("appointments");
+        }
+
+        if ($_SESSION["privilege_id"] === 2) {
+            View::redirect("client");
+        }
+
         View::redirect("home");
     }
 

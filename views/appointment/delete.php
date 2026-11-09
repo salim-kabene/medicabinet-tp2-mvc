@@ -12,6 +12,7 @@
         }) }}
 
         <div class="app-layout__content">
+            {{ include('layouts/account.php') }}
             <main class="appointment-delete">
                 <a class="back-link" href="{{ base }}/appointments">
                     <span class="icon icon--arrow-left" aria-hidden="true"></span>

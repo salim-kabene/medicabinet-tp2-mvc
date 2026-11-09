@@ -16,6 +16,7 @@ class View
         $twig->addGlobal("base", BASE);
         $twig->addGlobal("httpStatus", http_response_code());
         $twig->addGlobal("session", $_SESSION);
+        $twig->addGlobal("guest", !Auth::check());
         echo $twig->render($template . ".php", $data);
     }
 

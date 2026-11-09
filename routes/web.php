@@ -22,7 +22,8 @@ Route::post("/user/create", "UserController@store");
 
 Route::get("/login", "AuthController@index");
 Route::post("/login", "AuthController@store");
-
 Route::post("/logout", "AuthController@delete");
+
+Route::get("/client", "ClientController@index");
 
 Route::dispatch();
