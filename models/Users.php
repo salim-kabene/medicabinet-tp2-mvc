@@ -39,6 +39,7 @@ class Users extends CRUD
 
         $_SESSION["user_id"] = (int) $user["id"];
         $_SESSION["user_name"] = $user["name"];
+        $_SESSION["username"] = $user["username"];
         $_SESSION["privilege_id"] = (int) $user["privilege_id"];
 
         $_SESSION["patient_id"] = $user["patient_id"] === null
