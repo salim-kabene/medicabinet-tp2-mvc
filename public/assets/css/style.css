@@ -596,7 +596,41 @@
 .account-bar form {
     margin: 0;
 }
+.logs-table-wrapper {
+    margin-top: 2rem;
+    overflow-x: auto;
+}
 
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.logs-table caption {
+    padding-bottom: 1rem;
+    text-align: left;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #d5e4ec;
+    vertical-align: top;
+}
+
+.logs-table th {
+    background-color: #edf7f8;
+}
+
+.logs-table td:first-child {
+    white-space: nowrap;
+}
+
+.logs-table td:last-child {
+    overflow-wrap: anywhere;
+    min-width: 12rem;
+}
 @media (max-width: 760px) {
     .account-bar {
         justify-content: space-between;

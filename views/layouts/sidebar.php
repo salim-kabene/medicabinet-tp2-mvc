@@ -15,8 +15,14 @@
                     Accueil
                 </a>
             </li>
-
             {% elseif session.privilege_id == 1 %}
+            <li class="sidebar__item">
+                <a class="sidebar__link {% if activePage == 'logs' %}sidebar__link--active{% endif %}"
+                    href="{{ base }}/logs" {% if activePage == 'logs' %}aria-current="page" {% endif %}>
+                    <span class="icon icon--list" aria-hidden="true"></span>
+                    Journal de bord
+                </a>
+            </li>
             <li class="sidebar__item">
                 <a class="sidebar__link {% if activePage == 'appointments' %}sidebar__link--active{% endif %}"
                     href="{{ base }}/appointments" {% if activePage == 'appointments' %}aria-current="page" {% endif %}>
@@ -40,7 +46,6 @@
                     Créer un compte
                 </a>
             </li>
-
             {% elseif session.privilege_id == 2 %}
             <li class="sidebar__item">
                 <a class="sidebar__link {% if activePage == 'client' %}sidebar__link--active{% endif %}"
