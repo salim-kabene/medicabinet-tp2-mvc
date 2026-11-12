@@ -631,6 +631,37 @@
     overflow-wrap: anywhere;
     min-width: 12rem;
 }
+.logs-empty {
+    margin-top: 2rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    background-color: #f4f9fb;
+    border: 1px solid #d5e4ec;
+    border-radius: 12px;
+}
+
+.logs-empty h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.25rem;
+}
+
+.logs-empty p {
+    margin: 0;
+    color: #526b80;
+}
+
+.logs-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.logs-pagination__info {
+    color: #526b80;
+}
 @media (max-width: 760px) {
     .account-bar {
         justify-content: space-between;
