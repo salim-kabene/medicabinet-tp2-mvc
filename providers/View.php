@@ -9,15 +9,24 @@ class View
 {
     public static function render(string $template, array $data = []): void
     {
+        echo self::renderToString($template, $data);
+    }
+
+    public static function renderToString(string $template, array $data = []): string
+    {
         $loader = new FilesystemLoader(__DIR__ . "/../views");
-        $twig = new Environment($loader);
+
+        $twig = new Environment($loader, [
+            "autoescape" => "html"
+        ]);
 
         $twig->addGlobal("asset", ASSET);
         $twig->addGlobal("base", BASE);
         $twig->addGlobal("httpStatus", http_response_code());
         $twig->addGlobal("session", $_SESSION);
         $twig->addGlobal("guest", !Auth::check());
-        echo $twig->render($template . ".php", $data);
+
+        return $twig->render($template . ".php", $data);
     }
 
     public static function redirect(string $url): void
