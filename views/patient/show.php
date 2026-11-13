@@ -58,6 +58,9 @@
                             </ul>
                         </div>
                     </div>
+                    <a class="button button--secondary" href="{{ base }}/pdf/appointments?id={{ patient.id }}">
+                        Télécharger les rendez-vous en PDF
+                    </a>
                     <a class="button button--primary" href="{{ base }}/appointment/create?patient_id={{ patient.id }}">
                         <span class="icon icon--plus" aria-hidden="true"></span>
                         Planifier un rendez-vous

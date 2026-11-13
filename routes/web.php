@@ -26,5 +26,6 @@ Route::post("/logout", "AuthController@delete");
 
 Route::get("/client", "ClientController@index");
 Route::get("/logs", "LogController@index");
+Route::get("/pdf/appointments", "PdfController@appointments");
 
 Route::dispatch();
