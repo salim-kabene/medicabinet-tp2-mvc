@@ -25,10 +25,12 @@
                 </header>
 
                 <section aria-labelledby="appointments-title">
-                    <h2 id="appointments-title">Mes rendez-vous</h2>
-                    <a class="button button--secondary" href="{{ base }}/pdf/appointments">
-                        Télécharger mes rendez-vous en PDF
-                    </a>
+                    <div class="appointments-heading">
+                        <h2 id="appointments-title">Mes rendez-vous</h2>
+                        <a class="button button--secondary" href="{{ base }}/pdf/appointments">
+                            Télécharger mes rendez-vous en PDF
+                        </a>
+                    </div>
                     <div class="table-wrapper">
                         <table class="data-table">
                             <caption class="sr-only">

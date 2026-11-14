@@ -662,6 +662,25 @@
 .logs-pagination__info {
     color: #526b80;
 }
+.appointments-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.appointments-heading h2 {
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .appointments-heading .button {
+        width: 100%;
+        text-align: center;
+    }
+}
 @media (max-width: 760px) {
     .account-bar {
         justify-content: space-between;
