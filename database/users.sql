@@ -14,6 +14,7 @@ CREATE TABLE if not exists users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    photo VARCHAR(255) NULL,
     privilege_id INT NOT NULL,
     patient_id INT UNSIGNED NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
