@@ -17,6 +17,7 @@ if (str_contains($path, "\0")) {
 }
 
 $file = realpath(__DIR__ . $path);
+
 $assetsDirectory = realpath(__DIR__ . "/public/assets");
 
 $allowedExtensions = [
