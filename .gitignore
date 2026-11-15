@@ -13,3 +13,7 @@
 Thumbs.db
 
 /vendor/
+
+# Photos de profil televersees
+/storage/avatars/*
+!/storage/avatars/.htaccess

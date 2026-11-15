@@ -23,6 +23,15 @@ class Users extends CRUD
         return password_hash($password, PASSWORD_BCRYPT, $options);
     }
 
+    public function updatePhoto(int $userId, string $filename): bool
+    {
+        $sql = "UPDATE users SET photo = :photo WHERE id = :id";
+        $stmt = $this->prepare($sql);
+        $stmt->bindValue(":photo", $filename, \PDO::PARAM_STR);
+        $stmt->bindValue(":id", $userId, \PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
     public function checkUser(string $username, string $password): bool
     {
         $user = $this->unique("username", $username);
@@ -40,6 +49,7 @@ class Users extends CRUD
         $_SESSION["user_id"] = (int) $user["id"];
         $_SESSION["user_name"] = $user["name"];
         $_SESSION["username"] = $user["username"];
+        $_SESSION["user_photo"] = $user["photo"] ?? null;
         $_SESSION["privilege_id"] = (int) $user["privilege_id"];
 
         $_SESSION["patient_id"] = $user["patient_id"] === null
