@@ -51,7 +51,7 @@ class AuthController
         if (!is_string($username) || !is_string($password)) {
             http_response_code(400);
 
-            $this->renderForm([], ["message" => "Les données transmises sont invalides."]);
+            $this->renderForm([], ["message" => Lang::get("error.invalid_data")]);
 
             return;
         }
@@ -86,8 +86,8 @@ class AuthController
             http_response_code(500);
 
             View::render("error", [
-                "pageTitle" => "Service indisponible — MédiCabinet",
-                "message" => "La connexion est momentanément indisponible.",
+                "pageTitle" => Lang::get("error.service_unavailable") . " — MédiCabinet",
+                "message" => Lang::get("auth.unavailable"),
             ]);
 
             return;
@@ -97,7 +97,7 @@ class AuthController
             http_response_code(401);
 
             $this->renderForm($values, [
-                "message" => "L’identifiant ou le mot de passe est incorrect.",
+                "message" => Lang::get("auth.invalid_credentials"),
             ]);
 
             return;
@@ -125,8 +125,8 @@ class AuthController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "Demande refusée — MédiCabinet",
-                "message" => "Le formulaire a expiré. Veuillez réessayer.",
+                "pageTitle" => Lang::get("error.request_denied") . " — MédiCabinet",
+                "message" => Lang::get("error.form_expired_retry"),
             ]);
 
             return;

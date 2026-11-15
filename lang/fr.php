@@ -25,4 +25,12 @@ return [
     "auth.title" => "Connexion",
     "auth.username" => "Identifiant de connexion",
     "auth.password" => "Mot de passe",
+    "error.request_denied" => "Demande refusée",
+    "error.service_unavailable" => "Service indisponible",
+    "error.form_expired_reopen" => "Le formulaire a expiré. Veuillez le rouvrir.",
+    "error.form_expired_retry" => "Le formulaire a expiré. Veuillez réessayer.",
+    "error.invalid_data" => "Les données transmises sont invalides.",
+
+    "auth.unavailable" => "La connexion est momentanément indisponible.",
+    "auth.invalid_credentials" => "L’identifiant ou le mot de passe est incorrect.",
 ];

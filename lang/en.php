@@ -25,4 +25,12 @@ return [
     "auth.title" => "Sign in",
     "auth.username" => "Login email",
     "auth.password" => "Password",
+    "error.request_denied" => "Request denied",
+    "error.service_unavailable" => "Service unavailable",
+    "error.form_expired_reopen" => "The form has expired. Please reopen it.",
+    "error.form_expired_retry" => "The form has expired. Please try again.",
+    "error.invalid_data" => "The submitted data is invalid.",
+
+    "auth.unavailable" => "Sign-in is temporarily unavailable.",
+    "auth.invalid_credentials" => "The login email or password is incorrect.",
 ];
