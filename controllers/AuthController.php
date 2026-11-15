@@ -6,6 +6,7 @@ use App\Models\Users;
 use App\Providers\Validator;
 use App\Providers\View;
 use PDOException;
+use App\Providers\Lang;
 
 class AuthController
 {
@@ -19,7 +20,7 @@ class AuthController
         array $errors = []
     ): void {
         View::render("auth/index", [
-            "pageTitle" => "Connexion — MédiCabinet",
+            "pageTitle" => Lang::get("auth.title") . " — MédiCabinet",
             "values" => $values,
             "errors" => $errors,
             "csrfToken" => $_SESSION["csrf_token"],

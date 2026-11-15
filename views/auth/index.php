@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -12,9 +12,12 @@
         }) }}
 
         <div class="app-layout__content">
+            <div class="account-bar">
+                {% include 'layouts/language.php' %}
+            </div>
             <main class="appointment-editor">
                 <header class="appointment-editor__header">
-                    <h1>Connexion</h1>
+                    <h1>{{ trans['auth.title'] }}</h1>
                 </header>
 
                 {% if errors %}
@@ -33,7 +36,7 @@
                     <div class="appointment-form__fields">
                         <div class="form-field">
                             <label for="username">
-                                Identifiant de connexion
+                                {{ trans['auth.username'] }}
                             </label>
 
                             <input class="form-field__control" type="email" id="username" name="username"
@@ -42,7 +45,7 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="password">Mot de passe</label>
+                            <label for="password">{{ trans['auth.password'] }}</label>
 
                             <input class="form-field__control" type="password" id="password" name="password"
                                 autocomplete="current-password" required>
@@ -51,7 +54,7 @@
 
                     <div class="appointment-form__actions">
                         <button class="button button--primary" type="submit">
-                            Se connecter
+                            {{ trans['account.login'] }}
                         </button>
                     </div>
                 </form>

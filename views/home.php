@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -17,27 +17,25 @@
             <main class="home">
                 <header class="home__header">
                     <h1 class="home__title">
-                        Bienvenue dans MédiCabinet
+                        {{ trans['home.title'] }}
                     </h1>
 
                     <p class="home__description">
-                        Votre espace en ligne pour consulter les rendez-vous
-                        enregistrés auprès de votre cabinet.
+                        {{ trans['home.description'] }}
                     </p>
                 </header>
 
                 <section aria-labelledby="access-title">
-                    <h2 id="access-title">Accéder à votre espace</h2>
+                    <h2 id="access-title">
+                        {{ trans['home.access_title'] }}
+                    </h2>
 
                     <p class="home__description">
-                        Connectez-vous avec les identifiants fournis par le
-                        cabinet pour retrouver vos rendez-vous, les médecins
-                        associés et le statut de vos consultations.
+                        {{ trans['home.access_description'] }}
                     </p>
 
                     <p class="home__description">
-                        Vous ne disposez pas encore d’un compte ?
-                        Adressez-vous au cabinet pour obtenir votre accès.
+                        {{ trans['home.no_account'] }}
                     </p>
                 </section>
             </main>

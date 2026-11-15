@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Providers\Auth;
 use App\Providers\View;
+use App\Providers\Lang;
 
 class HomeController
 {
@@ -20,7 +21,7 @@ class HomeController
         }
 
         View::render("home", [
-            "pageTitle" => "Bienvenue — MédiCabinet",
+            "pageTitle" => Lang::get("home.title") . " — MédiCabinet",
         ]);
     }
 }
