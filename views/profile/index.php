@@ -62,6 +62,16 @@
                             Enregistrer la photo
                         </button>
                     </form>
+                    {% if session.user_photo|default('') %}
+                    <form action="{{ base }}/profile/photo/delete" method="post" class="profile-photo__delete">
+
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+                        <button class="button button--secondary" type="submit">
+                            Supprimer ma photo
+                        </button>
+                    </form>
+                    {% endif %}
                 </section>
             </main>
         </div>

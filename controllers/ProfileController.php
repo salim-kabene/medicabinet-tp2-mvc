@@ -157,4 +157,56 @@ class ProfileController
             error_log("Impossible de supprimer une ancienne photo de profil.");
         }
     }
+
+    public function deletePhoto(array $data = []): void
+    {
+        $token = $data["csrf_token"] ?? null;
+
+        if (
+            !is_string($token)
+            || empty($_SESSION["csrf_token"])
+            || !hash_equals($_SESSION["csrf_token"], $token)
+        ) {
+            http_response_code(403);
+            $this->renderForm([
+                "La demande a expiré ou est invalide. Veuillez réessayer."
+            ]);
+            return;
+        }
+
+        try {
+            $userId = (int) $_SESSION["user_id"];
+            $model = new Users();
+            $user = $model->selectId($userId);
+
+            if ($user === false) {
+                http_response_code(404);
+                $this->renderForm(["Ce compte est introuvable."]);
+                return;
+            }
+
+            if (!$model->updatePhoto($userId, null)) {
+                throw new \RuntimeException(
+                    "Impossible de retirer la photo du compte."
+                );
+            }
+        } catch (\Exception $exception) {
+            error_log(
+                "Erreur de suppression de photo : " . $exception->getMessage()
+            );
+
+            http_response_code(500);
+            $this->renderForm([
+                "Impossible de supprimer la photo. Veuillez réessayer plus tard."
+            ]);
+            return;
+        }
+
+        $_SESSION["user_photo"] = null;
+
+        $this->deleteStoredPhoto($user["photo"] ?? null);
+
+        $_SESSION["profile_success"] = "Votre photo a été supprimée.";
+        View::redirect("profile");
+    }
 }

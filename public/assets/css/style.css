@@ -719,6 +719,9 @@
 .profile-photo__form p {
     margin: 0;
 }
+.profile-photo__delete {
+    margin-top: 1rem;
+}
 @media (max-width: 600px) {
     .appointments-heading .button {
         width: 100%;
