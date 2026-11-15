@@ -674,7 +674,51 @@
 .appointments-heading h2 {
     margin: 0;
 }
+.account-bar__avatar {
+    overflow: hidden;
+    text-decoration: none;
+    flex-shrink: 0;
+}
 
+.account-bar__avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-bar__avatar:focus-visible {
+    outline: 3px solid #17324d;
+    outline-offset: 3px;
+}
+
+.profile-photo {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #d5e4ec;
+    border-radius: 12px;
+}
+
+.profile-photo__preview {
+    display: block;
+    margin: 1rem 0;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-photo__form {
+    display: grid;
+    gap: 1rem;
+    max-width: 32rem;
+}
+
+.profile-photo__form input[type="file"] {
+    max-width: 100%;
+}
+
+.profile-photo__form p {
+    margin: 0;
+}
 @media (max-width: 600px) {
     .appointments-heading .button {
         width: 100%;

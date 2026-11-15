@@ -28,4 +28,8 @@ Route::get("/client", "ClientController@index");
 Route::get("/logs", "LogController@index");
 Route::get("/pdf/appointments", "PdfController@appointments");
 
+Route::get("/profile", "ProfileController@index");
+Route::post("/profile/photo", "ProfileController@updatePhoto");
+Route::get("/profile/photo", "ProfileController@photo");
+
 Route::dispatch();

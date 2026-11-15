@@ -8,9 +8,13 @@
     {% endif %}
 
     <div class="account-bar__identity">
-        <span class="account-bar__avatar" aria-hidden="true">
+        <a class="account-bar__avatar" href="{{ base }}/profile" aria-label="Modifier ma photo de profil">
+            {% if session.user_photo|default('') %}
+            <img src="{{ base }}/profile/photo" alt="" width="44" height="44">
+            {% else %}
             {{ initials|upper }}
-        </span>
+            {% endif %}
+        </a>
 
         <div class="account-bar__details">
             <span class="account-bar__name">
