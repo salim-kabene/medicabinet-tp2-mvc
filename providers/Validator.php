@@ -22,7 +22,9 @@ class Validator
     public function required()
     {
         if (trim($this->value) === "") {
-            $this->errors[$this->key] = "$this->name est obligatoire.";
+            $this->errors[$this->key] = Lang::get("validation.required", [
+                "{field}" => $this->name,
+            ]);
         }
 
         return $this;
@@ -37,9 +39,14 @@ class Validator
         $number = filter_var($this->value, FILTER_VALIDATE_INT);
 
         if ($number === false) {
-            $this->errors[$this->key] = "$this->name doit être un entier.";
+            $this->errors[$this->key] = Lang::get("validation.integer", [
+                "{field}" => $this->name,
+            ]);
         } elseif ($minimum !== null && $number < $minimum) {
-            $this->errors[$this->key] = "$this->name doit être supérieur ou égal à $minimum.";
+            $this->errors[$this->key] = Lang::get("validation.minimum", [
+                "{field}" => $this->name,
+                "{min}" => (string) $minimum,
+            ]);
         }
 
         return $this;
@@ -50,20 +57,13 @@ class Validator
         $count = preg_match_all("/./us", $this->value);
 
         if ($count === false || $count > $length) {
-            $this->errors[$this->key] = "$this->name doit contenir au maximum " . "$length caractères.";
+            $this->errors[$this->key] = Lang::get("validation.max", [
+                "{field}" => $this->name,
+                "{max}" => (string) $length,
+            ]);
         }
 
         return $this;
-    }
-
-    public function isSuccess(): bool
-    {
-        return empty($this->errors);
-    }
-
-    public function getErrors(): array
-    {
-        return $this->errors;
     }
 
     public function min(int $length)
@@ -71,7 +71,10 @@ class Validator
         $count = preg_match_all("/./us", $this->value);
 
         if ($count === false || $count < $length) {
-            $this->errors[$this->key] = "$this->name doit contenir au minimum $length caractères.";
+            $this->errors[$this->key] = Lang::get("validation.min", [
+                "{field}" => $this->name,
+                "{min}" => (string) $length,
+            ]);
         }
 
         return $this;
@@ -80,7 +83,9 @@ class Validator
     public function email()
     {
         if (filter_var($this->value, FILTER_VALIDATE_EMAIL) === false) {
-            $this->errors[$this->key] = "$this->name doit être une adresse courriel valide.";
+            $this->errors[$this->key] = Lang::get("validation.email", [
+                "{field}" => $this->name,
+            ]);
         }
 
         return $this;
@@ -98,9 +103,21 @@ class Validator
         $existing = $modelInstance->unique($this->key, $this->value);
 
         if ($existing !== false) {
-            $this->errors[$this->key] = "$this->name est déjà utilisé.";
+            $this->errors[$this->key] = Lang::get("validation.unique", [
+                "{field}" => $this->name,
+            ]);
         }
 
         return $this;
+    }
+
+    public function isSuccess(): bool
+    {
+        return empty($this->errors);
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }

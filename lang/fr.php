@@ -33,4 +33,14 @@ return [
 
     "auth.unavailable" => "La connexion est momentanément indisponible.",
     "auth.invalid_credentials" => "L’identifiant ou le mot de passe est incorrect.",
+    "validation.required" => "{field} est obligatoire.",
+    "validation.integer" => "{field} doit être un entier.",
+    "validation.minimum" => "{field} doit être supérieur ou égal à {min}.",
+    "validation.max" => "{field} doit contenir au maximum {max} caractères.",
+    "validation.min" => "{field} doit contenir au minimum {min} caractères.",
+    "validation.email" => "{field} doit être une adresse courriel valide.",
+    "validation.unique" => "{field} est déjà utilisé.",
+
+    "field.username" => "L’identifiant",
+    "field.password" => "Le mot de passe",
 ];

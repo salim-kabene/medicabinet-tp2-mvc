@@ -33,4 +33,14 @@ return [
 
     "auth.unavailable" => "Sign-in is temporarily unavailable.",
     "auth.invalid_credentials" => "The login email or password is incorrect.",
+    "validation.required" => "{field} is required.",
+    "validation.integer" => "{field} must be an integer.",
+    "validation.minimum" => "{field} must be greater than or equal to {min}.",
+    "validation.max" => "{field} must contain at most {max} characters.",
+    "validation.min" => "{field} must contain at least {min} characters.",
+    "validation.email" => "{field} must be a valid email address.",
+    "validation.unique" => "{field} is already in use.",
+
+    "field.username" => "Login email",
+    "field.password" => "Password",
 ];

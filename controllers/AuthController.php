@@ -60,10 +60,10 @@ class AuthController
 
         $validator = new Validator();
 
-        $validator->field("username", $username, "L’identifiant")
+        $validator->field("username", $username, Lang::get("field.username"))
             ->required()->email()->max(50);
 
-        $validator->field("password", $password, "Le mot de passe")
+        $validator->field("password", $password, Lang::get("field.password"))
             ->required();
 
         // Conserver uniquement l’identifiant pour réafficher le formulaire.
