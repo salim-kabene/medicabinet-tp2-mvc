@@ -6,6 +6,7 @@ use App\Models\Users;
 use App\Providers\Auth;
 use App\Providers\ImageUpload;
 use App\Providers\View;
+use App\Providers\Lang;
 
 class ProfileController
 {
@@ -25,7 +26,7 @@ class ProfileController
         unset($_SESSION["profile_success"]);
 
         View::render("profile/index", [
-            "pageTitle" => "Mon profil — MédiCabinet",
+            "pageTitle" => Lang::get("account.profile") . " — MédiCabinet",
             "errors" => $errors,
             "success" => $success,
         ]);
@@ -42,7 +43,7 @@ class ProfileController
         ) {
             http_response_code(403);
             $this->renderForm([
-                "La demande a expiré ou est invalide. Veuillez réessayer."
+                Lang::get("profile.invalid_request")
             ]);
             return;
         }
@@ -51,7 +52,9 @@ class ProfileController
 
         if (!is_array($file)) {
             http_response_code(422);
-            $this->renderForm(["Veuillez sélectionner une image."]);
+            $this->renderForm([
+                Lang::get("profile.select_image")
+            ]);
             return;
         }
 
@@ -64,7 +67,9 @@ class ProfileController
 
             if ($user === false) {
                 http_response_code(404);
-                $this->renderForm(["Ce compte est introuvable."]);
+                $this->renderForm([
+                    Lang::get("profile.account_not_found")
+                ]);
                 return;
             }
 
@@ -88,7 +93,7 @@ class ProfileController
 
             http_response_code(500);
             $this->renderForm([
-                "Impossible d’enregistrer la photo. Veuillez réessayer plus tard."
+                Lang::get("profile.save_failed")
             ]);
             return;
         }
@@ -98,7 +103,7 @@ class ProfileController
         // L’ancienne photo est supprimée seulement après la mise à jour.
         $this->deleteStoredPhoto($user["photo"] ?? null);
 
-        $_SESSION["profile_success"] = "Votre photo a été mise à jour.";
+        $_SESSION["profile_success"] = Lang::get("profile.updated");
         View::redirect("profile");
     }
 
@@ -169,7 +174,7 @@ class ProfileController
         ) {
             http_response_code(403);
             $this->renderForm([
-                "La demande a expiré ou est invalide. Veuillez réessayer."
+                Lang::get("profile.invalid_request")
             ]);
             return;
         }
@@ -181,7 +186,9 @@ class ProfileController
 
             if ($user === false) {
                 http_response_code(404);
-                $this->renderForm(["Ce compte est introuvable."]);
+                $this->renderForm([
+                    Lang::get("profile.account_not_found")
+                ]);
                 return;
             }
 
@@ -197,7 +204,7 @@ class ProfileController
 
             http_response_code(500);
             $this->renderForm([
-                "Impossible de supprimer la photo. Veuillez réessayer plus tard."
+                Lang::get("profile.delete_failed")
             ]);
             return;
         }
@@ -206,7 +213,7 @@ class ProfileController
 
         $this->deleteStoredPhoto($user["photo"] ?? null);
 
-        $_SESSION["profile_success"] = "Votre photo a été supprimée.";
+        $_SESSION["profile_success"] = Lang::get("profile.deleted");
         View::redirect("profile");
     }
 }
