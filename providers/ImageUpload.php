@@ -11,31 +11,31 @@ class ImageUpload
             || !is_int($file["error"])
             || !is_string($file["tmp_name"])
         ) {
-            throw new \InvalidArgumentException("Le fichier envoyé est invalide.");
+            throw new \InvalidArgumentException(Lang::get("upload.invalid_file"));
         }
 
         if ($file["error"] === UPLOAD_ERR_NO_FILE) {
-            throw new \InvalidArgumentException("Veuillez sélectionner une image.");
+            throw new \InvalidArgumentException(Lang::get("profile.select_image"));
         }
 
         if ($file["error"] === UPLOAD_ERR_INI_SIZE || $file["error"] === UPLOAD_ERR_FORM_SIZE) {
-            throw new \InvalidArgumentException("L’image ne doit pas dépasser 2 Mo.");
+            throw new \InvalidArgumentException(Lang::get("upload.too_large"));
         }
 
         if ($file["error"] !== UPLOAD_ERR_OK) {
-            throw new \InvalidArgumentException("Le téléversement a échoué. Veuillez réessayer.");
+            (Lang::get("upload.failed"));
         }
 
         $temporaryPath = $file["tmp_name"];
 
         if (!is_uploaded_file($temporaryPath)) {
-            throw new \InvalidArgumentException("Le fichier reçu est invalide.");
+            throw new \InvalidArgumentException(Lang::get("upload.invalid_file"));
         }
 
         $size = filesize($temporaryPath);
 
         if ($size === false || $size === 0 || $size > 2 * 1024 * 1024) {
-            throw new \InvalidArgumentException("L’image doit être non vide et ne pas dépasser 2 Mo.");
+            throw new \InvalidArgumentException(Lang::get("upload.invalid_size"));
         }
 
         $fileInfo = new \finfo(FILEINFO_MIME_TYPE);
@@ -47,13 +47,13 @@ class ImageUpload
         ];
 
         if (!isset($allowedTypes[$mimeType])) {
-            throw new \InvalidArgumentException("Seules les images JPEG et PNG sont acceptées.");
+            throw new \InvalidArgumentException(Lang::get("upload.invalid_type"));
         }
 
         $dimensions = @getimagesize($temporaryPath);
 
         if ($dimensions === false || ($dimensions["mime"] ?? "") !== $mimeType) {
-            throw new \InvalidArgumentException("Le fichier ne correspond pas à une image valide.");
+            throw new \InvalidArgumentException(Lang::get("upload.invalid_image"));
         }
 
         if (
@@ -63,7 +63,7 @@ class ImageUpload
             || $dimensions[1] > 3000
         ) {
             throw new \InvalidArgumentException(
-                "L’image ne doit pas dépasser 3 000 pixels de largeur ou de hauteur."
+                Lang::get("upload.invalid_dimensions")
             );
         }
 

@@ -84,4 +84,12 @@ return [
     "profile.delete_failed" => "Unable to delete the photo. Please try again later.",
     "profile.updated" => "Your photo has been updated.",
     "profile.deleted" => "Your photo has been deleted.",
+
+    "upload.invalid_file" => "The uploaded file is invalid.",
+    "upload.too_large" => "The image must not exceed 2 MB.",
+    "upload.failed" => "The upload failed. Please try again.",
+    "upload.invalid_size" => "The image must not be empty or exceed 2 MB.",
+    "upload.invalid_type" => "Only JPEG and PNG images are accepted.",
+    "upload.invalid_image" => "The file is not a valid image.",
+    "upload.invalid_dimensions" => "The image must not exceed 3,000 pixels in width or height.",
 ];

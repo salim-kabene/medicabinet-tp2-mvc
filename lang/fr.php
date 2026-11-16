@@ -84,4 +84,12 @@ return [
     "profile.delete_failed" => "Impossible de supprimer la photo. Veuillez réessayer plus tard.",
     "profile.updated" => "Votre photo a été mise à jour.",
     "profile.deleted" => "Votre photo a été supprimée.",
+
+    "upload.invalid_file" => "Le fichier envoyé est invalide.",
+    "upload.too_large" => "L’image ne doit pas dépasser 2 Mo.",
+    "upload.failed" => "Le téléversement a échoué. Veuillez réessayer.",
+    "upload.invalid_size" => "L’image doit être non vide et ne pas dépasser 2 Mo.",
+    "upload.invalid_type" => "Seules les images JPEG et PNG sont acceptées.",
+    "upload.invalid_image" => "Le fichier ne correspond pas à une image valide.",
+    "upload.invalid_dimensions" => "L’image ne doit pas dépasser 3 000 pixels de largeur ou de hauteur.",
 ];
