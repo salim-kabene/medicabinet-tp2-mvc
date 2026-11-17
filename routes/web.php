@@ -33,4 +33,6 @@ Route::post("/profile/photo", "ProfileController@updatePhoto");
 Route::get("/profile/photo", "ProfileController@photo");
 Route::post("/profile/photo/delete", "ProfileController@deletePhoto");
 
+Route::post("/language", "LanguageController@update");
+
 Route::dispatch();

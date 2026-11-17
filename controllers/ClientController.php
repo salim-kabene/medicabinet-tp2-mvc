@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\Appointment;
 use App\Providers\Auth;
 use App\Providers\View;
+use App\Providers\Lang;
 use PDOException;
 
 class ClientController
@@ -24,8 +25,9 @@ class ClientController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "Accès indisponible — MédiCabinet",
-                "message" => "Votre compte n’est associé à aucun patient.",
+                "pageTitle" => Lang::get("error.access_unavailable")
+                    . " — MédiCabinet",
+                "message" => Lang::get("client.no_patient"),
             ]);
 
             return;
@@ -39,8 +41,9 @@ class ClientController
                 http_response_code(404);
 
                 View::render("error", [
-                    "pageTitle" => "Patient introuvable — MédiCabinet",
-                    "message" => "Votre fiche patient est introuvable.",
+                    "pageTitle" => Lang::get("error.patient_not_found")
+                        . " — MédiCabinet",
+                    "message" => Lang::get("client.patient_not_found"),
                 ]);
 
                 return;
@@ -50,30 +53,25 @@ class ClientController
             $appointments = $appointmentModel->selectByPatient($patientId);
         } catch (PDOException $exception) {
             error_log(
-                "Erreur SQL dans ClientController : " . $exception->getMessage()
+                "Erreur SQL dans ClientController : "
+                    . $exception->getMessage()
             );
 
             http_response_code(500);
 
             View::render("error", [
-                "pageTitle" => "Service indisponible — MédiCabinet",
-                "message" => "Impossible de charger vos rendez-vous.",
+                "pageTitle" => Lang::get("error.service_unavailable")
+                    . " — MédiCabinet",
+                "message" => Lang::get("client.appointments_unavailable"),
             ]);
 
             return;
         }
 
         View::render("client/index", [
-            "pageTitle" => "Mon espace — MédiCabinet",
+            "pageTitle" => Lang::get("nav.client") . " — MédiCabinet",
             "patient" => $patient,
             "appointments" => $appointments,
-            "statusLabels" => [
-                "planned" => "Planifié",
-                "confirmed" => "Confirmé",
-                "completed" => "Terminé",
-                "cancelled" => "Annulé",
-                "absent" => "Absent",
-            ],
         ]);
     }
 }
