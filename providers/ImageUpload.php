@@ -23,7 +23,7 @@ class ImageUpload
         }
 
         if ($file["error"] !== UPLOAD_ERR_OK) {
-            (Lang::get("upload.failed"));
+            throw new \InvalidArgumentException(Lang::get("upload.failed"));
         }
 
         $temporaryPath = $file["tmp_name"];
