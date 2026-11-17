@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -16,34 +16,38 @@
             <main class="patient-profile">
                 <header class="home__header">
                     <h1 class="home__title">
-                        Bienvenue, {{ session.user_name }}
+                        {{ trans['client.welcome'] }} {{ session.user_name }}
                     </h1>
 
                     <p class="home__description">
-                        Espace client — consultez vos rendez-vous.
+                        {{ trans['client.description'] }}
                     </p>
                 </header>
 
                 <section aria-labelledby="appointments-title">
                     <div class="appointments-heading">
-                        <h2 id="appointments-title">Mes rendez-vous</h2>
+                        <h2 id="appointments-title">
+                            {{ trans['client.appointments'] }}
+                        </h2>
+
                         <a class="button button--secondary" href="{{ base }}/pdf/appointments">
-                            Télécharger mes rendez-vous en PDF
+                            {{ trans['client.download_pdf'] }}
                         </a>
                     </div>
+
                     <div class="table-wrapper">
                         <table class="data-table">
                             <caption class="sr-only">
-                                Rendez-vous de {{ patient.first_name }}
-                                {{ patient.last_name }}
+                                {{ trans['client.appointments_for'] }}
+                                {{ patient.first_name }} {{ patient.last_name }}
                             </caption>
 
                             <thead>
                                 <tr>
-                                    <th scope="col">Date et heure</th>
-                                    <th scope="col">Médecin</th>
-                                    <th scope="col">Services</th>
-                                    <th scope="col">Statut</th>
+                                    <th scope="col">{{ trans['appointment.datetime'] }}</th>
+                                    <th scope="col">{{ trans['appointment.doctor'] }}</th>
+                                    <th scope="col">{{ trans['appointment.services'] }}</th>
+                                    <th scope="col">{{ trans['appointment.status'] }}</th>
                                 </tr>
                             </thead>
 
@@ -51,25 +55,30 @@
                                 {% for appointment in appointments %}
                                 <tr>
                                     <td>
-                                        {{ appointment.starts_at|date('d/m/Y à H:i') }}
+                                        {{ appointment.starts_at|date('d/m/Y') }}
+                                        {{ trans['common.at'] }}
+                                        {{ appointment.starts_at|date('H:i') }}
                                     </td>
+
                                     <td>
                                         {{ appointment.doctor_first_name }}
                                         {{ appointment.doctor_last_name }}
                                     </td>
+
                                     <td>
-                                        {{ appointment.service_names|default('Aucun service') }}
+                                        {{ appointment.service_names|service_list }}
                                     </td>
+
                                     <td>
                                         <span class="status-badge status-badge--{{ appointment.status }}">
-                                            {{ statusLabels[appointment.status]|default(appointment.status) }}
+                                            {{ trans['status.' ~ appointment.status]|default(appointment.status) }}
                                         </span>
                                     </td>
                                 </tr>
                                 {% else %}
                                 <tr>
                                     <td colspan="4">
-                                        Vous n’avez aucun rendez-vous enregistré.
+                                        {{ trans['client.empty'] }}
                                     </td>
                                 </tr>
                                 {% endfor %}

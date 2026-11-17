@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -13,9 +13,10 @@
 
         <div class="app-layout__content">
             {{ include('layouts/account.php') }}
+            <p class="language-switch__notice">{{ trans['language.reload_notice'] }}</p>
             <main class="appointment-editor">
                 <header class="appointment-editor__header">
-                    <h1>Créer un utilisateur</h1>
+                    <h1>{{ trans['user.title'] }}</h1>
                 </header>
                 {% if success %}
                 <p class="alert alert--success" role="status">
@@ -24,7 +25,7 @@
                 {% endif %}
                 {% if errors %}
                 <div class="appointment-form__errors" role="alert">
-                    <p>Veuillez corriger les erreurs suivantes :</p>
+                    <p>{{ trans['common.correct_errors'] }}</p>
 
                     <ul>
                         {% for error in errors %}
@@ -39,14 +40,14 @@
 
                     <div class="appointment-form__fields">
                         <div class="form-field">
-                            <label for="name">Nom complet</label>
+                            <label for="name">{{ trans['user.name'] }}</label>
                             <input class="form-field__control" type="text" id="name" name="name"
                                 value="{{ values.name|default('') }}" minlength="2" maxlength="50" required>
                         </div>
 
                         <div class="form-field">
                             <label for="username">
-                                Identifiant de connexion (courriel)
+                                {{ trans['user.username'] }}
                             </label>
                             <input class="form-field__control" type="email" id="username" name="username"
                                 value="{{ values.username|default('') }}" maxlength="50" autocomplete="username"
@@ -54,36 +55,36 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="email">Courriel de contact</label>
+                            <label for="email">{{ trans['user.email'] }}</label>
                             <input class="form-field__control" type="email" id="email" name="email"
                                 value="{{ values.email|default('') }}" maxlength="100" required>
                         </div>
 
                         <div class="form-field">
-                            <label for="password">Mot de passe</label>
+                            <label for="password">{{ trans['auth.password'] }}</label>
                             <input class="form-field__control" type="password" id="password" name="password"
                                 autocomplete="new-password" minlength="8" required>
                         </div>
 
                         <div class="form-field">
-                            <label for="privilege-id">Privilège</label>
+                            <label for="privilege-id">{{ trans['user.privilege'] }}</label>
                             <select class="form-field__control" id="privilege-id" name="privilege_id" required>
-                                <option value="">Choisir un privilège</option>
+                                <option value="">{{ trans['user.choose_privilege'] }}</option>
 
                                 {% for privilege in privileges %}
                                 <option value="{{ privilege.id }}"
                                     {% if values.privilege_id|default('') == privilege.id %} selected {% endif %}>
-                                    {{ privilege.privilege }}
+                                    {{ privilege.id == 1 ? trans['account.admin'] : (privilege.id == 2 ? trans['account.client'] : privilege.privilege) }}
                                 </option>
                                 {% endfor %}
                             </select>
                         </div>
 
                         <div class="form-field">
-                            <label for="patient-id">Patient associé</label>
+                            <label for="patient-id">{{ trans['user.patient'] }}</label>
                             <select class="form-field__control" id="patient-id" name="patient_id"
                                 aria-describedby="patient-help">
-                                <option value="">Aucun patient</option>
+                                <option value="">{{ trans['user.no_patient'] }}</option>
 
                                 {% for patient in patients %}
                                 <option value="{{ patient.id }}" {% if values.patient_id|default('') == patient.id %}
@@ -95,19 +96,18 @@
                             </select>
 
                             <p id="patient-help">
-                                Obligatoire pour un client.
-                                Pour un administrateur, choisir « Aucun patient ».
+                                {{ trans['user.patient_help'] }}
                             </p>
                         </div>
                     </div>
 
                     <div class="appointment-form__actions">
                         <a class="button button--secondary" href="{{ base }}/">
-                            Annuler
+                            {{ trans['common.cancel'] }}
                         </a>
 
                         <button class="button button--primary" type="submit">
-                            Créer le compte
+                            {{ trans['user.create'] }}
                         </button>
                     </div>
                 </form>

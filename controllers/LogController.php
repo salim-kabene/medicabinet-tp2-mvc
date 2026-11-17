@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Log;
 use App\Providers\Auth;
 use App\Providers\View;
+use App\Providers\Lang;
 
 class LogController
 {
@@ -41,14 +42,15 @@ class LogController
             http_response_code(500);
 
             View::render("error", [
-                "message" => "Impossible de charger le journal des visites."
+                "pageTitle" => Lang::get("error.service_unavailable") . " — MédiCabinet",
+                "message" => Lang::get("log.failed")
             ]);
 
             return;
         }
 
         View::render("log/index", [
-            "pageTitle" => "Journal de bord — MédiCabinet",
+            "pageTitle" => Lang::get("nav.logs") . " — MédiCabinet",
             "logs" => $logs,
             "currentPage" => $page,
             "totalPages" => $totalPages,

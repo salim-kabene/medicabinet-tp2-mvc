@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Providers\View;
+use App\Providers\Lang;
 use App\Providers\Auth;
 use PDOException;
 
@@ -20,11 +21,11 @@ class AppointmentController
     public function index(array $data = []): void
     {
         $statusLabels = [
-            "planned" => "Planifié",
-            "confirmed" => "Confirmé",
-            "completed" => "Terminé",
-            "cancelled" => "Annulé",
-            "absent" => "Absent",
+            "planned" => Lang::get("status.planned"),
+            "confirmed" => Lang::get("status.confirmed"),
+            "completed" => Lang::get("status.completed"),
+            "cancelled" => Lang::get("status.cancelled"),
+            "absent" => Lang::get("status.absent"),
         ];
 
         $date = $data["date"] ?? "";
@@ -33,9 +34,9 @@ class AppointmentController
         $error = null;
 
         if (!is_string($date) || !is_string($status)) {
-            $error = "Les filtres transmis sont invalides.";
+            $error = Lang::get("appointment.invalid_filters");
         } elseif ($status !== "" && !array_key_exists($status, $statusLabels)) {
-            $error = "Le statut sélectionné est invalide.";
+            $error = Lang::get("appointment.invalid_selected_status");
         } elseif ($date !== "") {
             $validDate = false;
 
@@ -46,7 +47,7 @@ class AppointmentController
             }
 
             if (!$validDate) {
-                $error = "La date sélectionnée est invalide.";
+                $error = Lang::get("appointment.invalid_selected_date");
             }
         }
 
@@ -54,7 +55,7 @@ class AppointmentController
             http_response_code(400);
 
             View::render("error", [
-                "pageTitle" => "Filtres invalides — MédiCabinet",
+                "pageTitle" => Lang::get("appointment.invalid_filters_title") . " — MédiCabinet",
                 "message" => $error,
             ]);
 
@@ -76,7 +77,7 @@ class AppointmentController
         }
 
         View::render("appointment/index", [
-            "pageTitle" => "Rendez-vous — MédiCabinet",
+            "pageTitle" => Lang::get("nav.appointments") . " — MédiCabinet",
             "appointments" => $appointments,
             "todayCount" => $todayCount,
             "upcomingCount" => $upcomingCount,
@@ -121,8 +122,8 @@ class AppointmentController
                 http_response_code(400);
 
                 View::render("error", [
-                    "pageTitle" => "Patient invalide — MédiCabinet",
-                    "message" => "Le patient demandé est invalide.",
+                    "pageTitle" => Lang::get("appointment.invalid_patient_title") . " — MédiCabinet",
+                    "message" => Lang::get("appointment.invalid_patient"),
                 ]);
 
                 return;
@@ -132,17 +133,17 @@ class AppointmentController
         }
 
         View::render("appointment/create", [
-            "pageTitle" => "Planifier un rendez-vous — MédiCabinet",
-            "heading" => "Planifier un rendez-vous",
+            "pageTitle" => Lang::get("appointment.create") . " — MédiCabinet",
+            "heading" => Lang::get("appointment.create"),
             "patients" => $patients,
             "doctors" => $doctors,
             "services" => $services,
             "statusLabels" => [
-                "planned" => "Planifié",
-                "confirmed" => "Confirmé",
-                "completed" => "Terminé",
-                "cancelled" => "Annulé",
-                "absent" => "Absent",
+                "planned" => Lang::get("status.planned"),
+                "confirmed" => Lang::get("status.confirmed"),
+                "completed" => Lang::get("status.completed"),
+                "cancelled" => Lang::get("status.cancelled"),
+                "absent" => Lang::get("status.absent"),
             ],
             "values" => [
                 "patient_id" => $preselectedPatient,
@@ -156,7 +157,7 @@ class AppointmentController
             "errors" => [],
             "csrfToken" => $_SESSION["csrf_token"],
             "formAction" => BASE . "/appointment/create",
-            "submitLabel" => "Enregistrer le rendez-vous",
+            "submitLabel" => Lang::get("appointment.save"),
             "canSubmit" => true,
         ]);
     }
@@ -172,19 +173,19 @@ class AppointmentController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "Demande refusée — MédiCabinet",
-                "message" => "Le formulaire a expiré. Veuillez le rouvrir.",
+                "pageTitle" => Lang::get("error.request_denied") . " — MédiCabinet",
+                "message" => Lang::get("error.form_expired_reopen"),
             ]);
 
             return;
         }
 
         $statusLabels = [
-            "planned" => "Planifié",
-            "confirmed" => "Confirmé",
-            "completed" => "Terminé",
-            "cancelled" => "Annulé",
-            "absent" => "Absent",
+            "planned" => Lang::get("status.planned"),
+            "confirmed" => Lang::get("status.confirmed"),
+            "completed" => Lang::get("status.completed"),
+            "cancelled" => Lang::get("status.cancelled"),
+            "absent" => Lang::get("status.absent"),
         ];
 
         $values = [];
@@ -194,7 +195,7 @@ class AppointmentController
             $value = $data[$field] ?? "";
 
             if (!is_string($value)) {
-                $errors[$field] = "La valeur du champ est invalide.";
+                $errors[$field] = Lang::get("error.invalid_field");
                 $value = "";
             }
 
@@ -203,22 +204,22 @@ class AppointmentController
 
         $isEdit = $appointmentId !== null;
 
-        $heading = $isEdit ? "Modifier le rendez-vous" : "Planifier un rendez-vous";
+        $heading = $isEdit ? Lang::get("appointment.edit") : Lang::get("appointment.create");
 
         $formAction = $isEdit
             ? BASE . "/appointment/edit?id=" . $appointmentId
             : BASE . "/appointment/create";
 
-        $submitLabel = $isEdit ? "Enregistrer les modifications" : "Enregistrer le rendez-vous";
+        $submitLabel = $isEdit ? Lang::get("common.save_changes") : Lang::get("appointment.save");
 
         $validator = new Validator();
 
-        $validator->field("patient_id",  $values["patient_id"],  "Le patient")->required()->int(1);
-        $validator->field("doctor_id", $values["doctor_id"], "Le médecin")->required()->int(1);
-        $validator->field("date", $values["date"], "La date")->required();
-        $validator->field("time", $values["time"], "L’heure")->required();
-        $validator->field("status", $values["status"], "Le statut")->required();
-        $validator->field("reason", $values["reason"], "Le motif")->max(500);
+        $validator->field("patient_id",  $values["patient_id"],  Lang::get("field.patient"))->required()->int(1);
+        $validator->field("doctor_id", $values["doctor_id"], Lang::get("field.doctor"))->required()->int(1);
+        $validator->field("date", $values["date"], Lang::get("field.date"))->required();
+        $validator->field("time", $values["time"], Lang::get("field.time"))->required();
+        $validator->field("status", $values["status"], Lang::get("field.status"))->required();
+        $validator->field("reason", $values["reason"], Lang::get("field.reason"))->max(500);
 
         $errors = array_merge($errors, $validator->getErrors());
 
@@ -237,7 +238,7 @@ class AppointmentController
             }
 
             if (!$validDate) {
-                $errors["date"] = "La date est invalide.";
+                $errors["date"] = Lang::get("appointment.invalid_date");
             }
         }
 
@@ -248,14 +249,14 @@ class AppointmentController
                 $values["time"]
             ) !== 1
         ) {
-            $errors["time"] = "L’heure est invalide.";
+            $errors["time"] = Lang::get("appointment.invalid_time");
         }
 
         if (
             !isset($errors["status"])
             && !array_key_exists($values["status"], $statusLabels)
         ) {
-            $errors["status"] = "Le statut est invalide.";
+            $errors["status"] = Lang::get("appointment.invalid_status");
         }
 
         try {
@@ -279,7 +280,7 @@ class AppointmentController
                 array_column($patients, "id")
             )
         ) {
-            $errors["patient_id"] = "Le patient est introuvable.";
+            $errors["patient_id"] = Lang::get("patient.not_found");
         }
 
         if (
@@ -289,7 +290,7 @@ class AppointmentController
                 array_column($doctors, "id")
             )
         ) {
-            $errors["doctor_id"] = "Le médecin est introuvable.";
+            $errors["doctor_id"] = Lang::get("appointment.doctor_not_found");
         }
 
         $selectedServices = [];
@@ -298,7 +299,7 @@ class AppointmentController
         $validServiceIds = array_map("intval", array_column($services, "id"));
 
         if (!is_array($submittedServices)) {
-            $errors["services"] = "La sélection des services est invalide.";
+            $errors["services"] = Lang::get("appointment.invalid_services");
         } else {
             foreach ($submittedServices as $value) {
                 $serviceId = is_string($value)
@@ -313,7 +314,7 @@ class AppointmentController
                     $serviceId === false
                     || !in_array($serviceId, $validServiceIds, true)
                 ) {
-                    $errors["services"] = "Un des services sélectionnés est invalide.";
+                    $errors["services"] = Lang::get("appointment.invalid_service");
                     continue;
                 }
 
@@ -324,7 +325,7 @@ class AppointmentController
         $selectedServices = array_values(array_unique($selectedServices));
 
         if (empty($selectedServices)) {
-            $errors["services"] = "Sélectionnez au moins un service valide.";
+            $errors["services"] = Lang::get("appointment.service_required");
         }
 
         if (!empty($errors)) {
@@ -384,8 +385,8 @@ class AppointmentController
                     http_response_code(404);
 
                     View::render("error", [
-                        "pageTitle" => "Rendez-vous introuvable — MédiCabinet",
-                        "message" => "Ce rendez-vous est introuvable.",
+                        "pageTitle" => Lang::get("appointment.not_found_title") . " — MédiCabinet",
+                        "message" => Lang::get("appointment.not_found"),
                     ]);
 
                     return;
@@ -413,8 +414,8 @@ class AppointmentController
             http_response_code(400);
 
             View::render("error", [
-                "pageTitle" => "Demande invalide — MédiCabinet",
-                "message" => "L’identifiant du rendez-vous est invalide.",
+                "pageTitle" => Lang::get("error.invalid_request") . " — MédiCabinet",
+                "message" => Lang::get("appointment.invalid_id"),
             ]);
 
             return;
@@ -428,8 +429,8 @@ class AppointmentController
                 http_response_code(404);
 
                 View::render("error", [
-                    "pageTitle" => "Rendez-vous introuvable — MédiCabinet",
-                    "message" => "Ce rendez-vous est introuvable.",
+                    "pageTitle" => Lang::get("appointment.not_found_title") . " — MédiCabinet",
+                    "message" => Lang::get("appointment.not_found"),
                 ]);
 
                 return;
@@ -451,17 +452,17 @@ class AppointmentController
         }
 
         View::render("appointment/edit", [
-            "pageTitle" => "Modifier le rendez-vous — MédiCabinet",
-            "heading" => "Modifier le rendez-vous",
+            "pageTitle" => Lang::get("appointment.edit") . " — MédiCabinet",
+            "heading" => Lang::get("appointment.edit"),
             "patients" => $patients,
             "doctors" => $doctors,
             "services" => $services,
             "statusLabels" => [
-                "planned" => "Planifié",
-                "confirmed" => "Confirmé",
-                "completed" => "Terminé",
-                "cancelled" => "Annulé",
-                "absent" => "Absent",
+                "planned" => Lang::get("status.planned"),
+                "confirmed" => Lang::get("status.confirmed"),
+                "completed" => Lang::get("status.completed"),
+                "cancelled" => Lang::get("status.cancelled"),
+                "absent" => Lang::get("status.absent"),
             ],
             "values" => [
                 "patient_id" => $appointment["patient_id"],
@@ -475,7 +476,7 @@ class AppointmentController
             "errors" => [],
             "csrfToken" => $_SESSION["csrf_token"],
             "formAction" => BASE . "/appointment/edit?id=" . $id,
-            "submitLabel" => "Enregistrer les modifications",
+            "submitLabel" => Lang::get("common.save_changes"),
             "canSubmit" => true,
         ]);
     }
@@ -497,8 +498,8 @@ class AppointmentController
             http_response_code(400);
 
             View::render("error", [
-                "pageTitle" => "Demande invalide — MédiCabinet",
-                "message" => "L’identifiant du rendez-vous est invalide.",
+                "pageTitle" => Lang::get("error.invalid_request") . " — MédiCabinet",
+                "message" => Lang::get("appointment.invalid_id"),
             ]);
 
             return;
@@ -519,8 +520,8 @@ class AppointmentController
             http_response_code(400);
 
             View::render("error", [
-                "pageTitle" => "Demande invalide — MédiCabinet",
-                "message" => "L’identifiant du rendez-vous est invalide.",
+                "pageTitle" => Lang::get("error.invalid_request") . " — MédiCabinet",
+                "message" => Lang::get("appointment.invalid_id"),
             ]);
 
             return;
@@ -538,15 +539,15 @@ class AppointmentController
             http_response_code(404);
 
             View::render("error", [
-                "pageTitle" => "Rendez-vous introuvable — MédiCabinet",
-                "message" => "Ce rendez-vous est introuvable.",
+                "pageTitle" => Lang::get("appointment.not_found_title") . " — MédiCabinet",
+                "message" => Lang::get("appointment.not_found"),
             ]);
 
             return;
         }
 
         View::render("appointment/delete", [
-            "pageTitle" => "Supprimer un rendez-vous — MédiCabinet",
+            "pageTitle" => Lang::get("appointment.delete") . " — MédiCabinet",
             "appointment" => $appointment,
             "csrfToken" => $_SESSION["csrf_token"],
         ]);
@@ -563,8 +564,8 @@ class AppointmentController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "Demande refusée — MédiCabinet",
-                "message" => "Le formulaire a expiré. Veuillez le rouvrir.",
+                "pageTitle" => Lang::get("error.request_denied") . " — MédiCabinet",
+                "message" => Lang::get("error.form_expired_reopen"),
             ]);
 
             return;
@@ -580,8 +581,8 @@ class AppointmentController
             http_response_code(400);
 
             View::render("error", [
-                "pageTitle" => "Demande invalide — MédiCabinet",
-                "message" => "L’identifiant du rendez-vous est invalide.",
+                "pageTitle" => Lang::get("error.invalid_request") . " — MédiCabinet",
+                "message" => Lang::get("appointment.invalid_id"),
             ]);
 
             return;
@@ -599,8 +600,8 @@ class AppointmentController
             http_response_code(404);
 
             View::render("error", [
-                "pageTitle" => "Rendez-vous introuvable — MédiCabinet",
-                "message" => "Ce rendez-vous est introuvable.",
+                "pageTitle" => Lang::get("appointment.not_found_title") . " — MédiCabinet",
+                "message" => Lang::get("appointment.not_found"),
             ]);
 
             return;
@@ -616,8 +617,8 @@ class AppointmentController
         http_response_code(500);
 
         View::render("error", [
-            "pageTitle" => "Service indisponible — MédiCabinet",
-            "message" => "L’opération n’a pas pu être effectuée. " . "Veuillez réessayer plus tard.",
+            "pageTitle" => Lang::get("error.service_unavailable") . " — MédiCabinet",
+            "message" => Lang::get("error.operation_failed"),
         ]);
     }
 }

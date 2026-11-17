@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     <meta charset="UTF-8">
-    <title>Récapitulatif des rendez-vous</title>
+    <title>{{ trans['pdf.title'] }}</title>
 
     <style>
         @page {
@@ -89,38 +89,38 @@
 <body>
     <header class="document-header">
         <p class="brand">MédiCabinet</p>
-        <h1>Récapitulatif des rendez-vous</h1>
+        <h1>{{ trans['pdf.title'] }}</h1>
     </header>
 
     <section class="patient-info">
         <p>
-            <strong>Patient :</strong>
+            <strong>{{ trans['common.patient'] }} :</strong>
             {{ patient.first_name }} {{ patient.last_name }}
         </p>
 
         <p>
-            <strong>Document généré le :</strong>
+            <strong>{{ trans['pdf.generated'] }}</strong>
             {{ generatedAt }}
         </p>
 
         <p>
-            <strong>Nombre de rendez-vous :</strong>
+            <strong>{{ trans['pdf.count'] }}</strong>
             {{ appointments|length }}
         </p>
     </section>
 
     {% if appointments is empty %}
     <p class="empty">
-        Aucun rendez-vous enregistré pour ce patient.
+        {{ trans['patient.empty_appointments'] }}
     </p>
     {% else %}
     <table>
         <thead>
             <tr>
-                <th style="width: 22%;">Date et heure</th>
-                <th style="width: 25%;">Médecin</th>
-                <th style="width: 33%;">Services</th>
-                <th style="width: 20%;">Statut</th>
+                <th style="width: 22%;">{{ trans['appointment.datetime'] }}</th>
+                <th style="width: 25%;">{{ trans['appointment.doctor'] }}</th>
+                <th style="width: 33%;">{{ trans['appointment.services'] }}</th>
+                <th style="width: 20%;">{{ trans['appointment.status'] }}</th>
             </tr>
         </thead>
 
@@ -139,11 +139,11 @@
                 </td>
 
                 <td>
-                    {{ appointment.service_names|default('Non renseigné') }}
+                    {{ appointment.service_names|service_list }}
                 </td>
 
                 <td>
-                    {{ statusLabels[appointment.status]|default('Non renseigné') }}
+                    {{ statusLabels[appointment.status]|default(trans['common.not_provided']) }}
                 </td>
             </tr>
             {% endfor %}
@@ -152,8 +152,7 @@
     {% endif %}
 
     <p class="document-note">
-        Ce document présente les rendez-vous enregistrés au moment
-        de sa génération.
+        {{ trans['pdf.note'] }}
     </p>
 </body>
 

@@ -3,6 +3,7 @@
 namespace App\Routes;
 
 use App\Providers\View;
+use App\Providers\Lang;
 
 class Route
 {
@@ -53,8 +54,8 @@ class Route
         http_response_code(404);
 
         View::render("error", [
-            "pageTitle" => "Page introuvable — MédiCabinet",
-            "message" => "La page demandée n’existe pas ou son adresse a changé.",
+            "pageTitle" => Lang::get("error.page_not_found") . " — MédiCabinet",
+            "message" => Lang::get("error.page_not_found_message"),
         ]);
     }
 

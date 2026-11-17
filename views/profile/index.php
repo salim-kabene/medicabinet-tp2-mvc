@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -13,10 +13,11 @@
 
         <div class="app-layout__content">
             {{ include('layouts/account.php') }}
+            <p class="language-switch__notice">{{ trans['language.reload_notice'] }}</p>
             <main class="home">
                 <header>
-                    <h1 class="home__title">Mon profil</h1>
-                    <p>Personnalisez votre photo de profil.</p>
+                    <h1 class="home__title"> {{ trans['account.profile'] }}</h1>
+                    <p>{{ trans['profile.description'] }}</p>
                 </header>
 
                 {% if success %}
@@ -34,13 +35,13 @@
                 {% endif %}
 
                 <section class="profile-photo">
-                    <h2>Photo de profil</h2>
+                    <h2> {{ trans['profile.photo'] }}</h2>
 
                     {% if session.user_photo|default('') %}
-                    <img class="profile-photo__preview" src="{{ base }}/profile/photo" alt="Votre photo de profil"
-                        width="120" height="120">
+                    <img class="profile-photo__preview" src="{{ base }}/profile/photo"
+                        alt="{{ trans['profile.photo_alt'] }}" width="120" height="120">
                     {% else %}
-                    <p>Vous n’avez pas encore ajouté de photo.</p>
+                    <p>{{ trans['profile.no_photo'] }}</p>
                     {% endif %}
 
                     <form action="{{ base }}/profile/photo" method="post" enctype="multipart/form-data"
@@ -48,18 +49,17 @@
 
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
-                        <label for="photo">Choisir une photo</label>
+                        <label for="photo">{{ trans['profile.choose_photo'] }}</label>
 
                         <input type="file" id="photo" name="photo" accept="image/jpeg,image/png"
                             aria-describedby="photo-help" required>
 
                         <p id="photo-help">
-                            JPEG ou PNG, 2 Mo maximum.
-                            Dimensions maximales : 3 000 × 3 000 pixels.
+                            {{ trans['profile.photo_help'] }}
                         </p>
 
                         <button class="button button--primary" type="submit">
-                            Enregistrer la photo
+                            {{ trans['profile.save_photo'] }}
                         </button>
                     </form>
                     {% if session.user_photo|default('') %}
@@ -68,7 +68,7 @@
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
                         <button class="button button--secondary" type="submit">
-                            Supprimer ma photo
+                            {{ trans['profile.delete_photo'] }}
                         </button>
                     </form>
                     {% endif %}

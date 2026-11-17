@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Providers\View;
+use App\Providers\Lang;
 
 class LanguageController
 {
@@ -18,8 +19,8 @@ class LanguageController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "MédiCabinet",
-                "message" => "La demande est invalide / Invalid request.",
+                "pageTitle" => Lang::get("error.invalid_request") . " — MédiCabinet",
+                "message" => Lang::get("error.invalid_data"),
             ]);
 
             return;
@@ -31,8 +32,8 @@ class LanguageController
             http_response_code(400);
 
             View::render("error", [
-                "pageTitle" => "MédiCabinet",
-                "message" => "Langue invalide / Invalid language.",
+                "pageTitle" => Lang::get("error.invalid_request") . " — MédiCabinet",
+                "message" => Lang::get("language.invalid"),
             ]);
 
             return;

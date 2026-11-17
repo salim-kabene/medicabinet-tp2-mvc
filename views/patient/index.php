@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -16,10 +16,10 @@
             <main class="patients">
                 <header class="patients__header">
                     <div>
-                        <h1>Patients</h1>
+                        <h1>{{ trans['nav.patients'] }}</h1>
 
                         <p class="patients__description">
-                            Retrouvez les coordonnées de vos patients.
+                            {{ trans['patient.description'] }}
                         </p>
                     </div>
 
@@ -32,19 +32,19 @@
                     </span>
                 </header>
 
-                <div class="table-wrapper" role="region" aria-label="Liste des patients" tabindex="0">
+                <div class="table-wrapper" role="region" aria-label="{{ trans['patient.list'] }}" tabindex="0">
                     <table class="data-table">
                         <caption class="sr-only">
-                            Coordonnées des patients
+                            {{ trans['patient.contacts'] }}
                         </caption>
 
                         <thead>
                             <tr>
-                                <th scope="col">Patient</th>
-                                <th scope="col">Date de naissance</th>
-                                <th scope="col">Téléphone</th>
-                                <th scope="col">Courriel</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">{{ trans['common.patient'] }}</th>
+                                <th scope="col">{{ trans['patient.birth_date'] }}</th>
+                                <th scope="col">{{ trans['patient.phone'] }}</th>
+                                <th scope="col">{{ trans['patient.email'] }}</th>
+                                <th scope="col">{{ trans['common.action'] }}</th>
                             </tr>
                         </thead>
 
@@ -63,19 +63,19 @@
                                 <td>{{ patient.phone }}</td>
 
                                 <td>
-                                    {{ patient.email|default('Non renseigné') }}
+                                    {{ patient.email|default(trans['common.not_provided']) }}
                                 </td>
                                 <td>
                                     <a class="data-table__action" href="{{ base }}/patient/show?id={{ patient.id }}"
-                                        aria-label="Voir la fiche de {{ patient.first_name }} {{ patient.last_name }}">
-                                        Voir la fiche
+                                        aria-label="{{ trans['patient.view_for'] }} {{ patient.first_name }} {{ patient.last_name }}">
+                                        {{ trans['patient.view'] }}
                                     </a>
                                 </td>
                             </tr>
                             {% else %}
                             <tr>
                                 <td colspan="5">
-                                    Aucun patient enregistré.
+                                    {{ trans['patient.empty'] }}
                                 </td>
                             </tr>
                             {% endfor %}

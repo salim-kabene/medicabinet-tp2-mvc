@@ -3,7 +3,7 @@
 
     {% if errors %}
     <div class="appointment-form__errors" role="alert">
-        <p>Veuillez corriger les erreurs suivantes :</p>
+        <p>{{ trans['common.correct_errors'] }}</p>
 
         <ul>
             {% for error in errors %}
@@ -16,19 +16,19 @@
     <div class="appointment-form__layout">
         <div class="appointment-form__fields">
             <p class="appointment-form__notice">
-                Les champs marqués d’un * sont obligatoires.
+                {{ trans['common.required_fields'] }}
             </p>
 
             <div class="appointment-form__row appointment-form__row--people">
                 <div class="form-field">
                     <label class="form-field__label" for="patient-id">
-                        Patient <span aria-hidden="true">*</span>
+                        {{ trans['common.patient'] }} <span aria-hidden="true">*</span>
                     </label>
 
                     <select class="form-field__control" id="patient-id" name="patient_id" required
                         aria-invalid="{{ errors.patient_id is defined ? 'true' : 'false' }}"
                         {% if errors.patient_id is defined %} aria-describedby="patient-id-error" {% endif %}>
-                        <option value="">Choisir un patient</option>
+                        <option value="">{{ trans['appointment.choose_patient'] }}</option>
 
                         {% for patient in patients %}
                         <option value="{{ patient.id }}" {% if values.patient_id == patient.id %}selected{% endif %}>
@@ -46,13 +46,13 @@
 
                 <div class="form-field">
                     <label class="form-field__label" for="doctor-id">
-                        Médecin <span aria-hidden="true">*</span>
+                        {{ trans['appointment.doctor'] }} <span aria-hidden="true">*</span>
                     </label>
 
                     <select class="form-field__control" id="doctor-id" name="doctor_id" required
                         aria-invalid="{{ errors.doctor_id is defined ? 'true' : 'false' }}"
                         {% if errors.doctor_id is defined %} aria-describedby="doctor-id-error" {% endif %}>
-                        <option value="">Choisir un médecin</option>
+                        <option value="">{{ trans['appointment.choose_doctor'] }}</option>
 
                         {% for doctor in doctors %}
                         <option value="{{ doctor.id }}" {% if values.doctor_id == doctor.id %}selected{% endif %}>
@@ -72,7 +72,7 @@
             <div class="appointment-form__row appointment-form__row--schedule">
                 <div class="form-field">
                     <label class="form-field__label" for="appointment-date">
-                        Date <span aria-hidden="true">*</span>
+                        {{ trans['common.date'] }} <span aria-hidden="true">*</span>
                     </label>
 
                     <input class="form-field__control" type="date" id="appointment-date" name="date"
@@ -89,7 +89,7 @@
 
                 <div class="form-field">
                     <label class="form-field__label" for="appointment-time">
-                        Heure <span aria-hidden="true">*</span>
+                        {{ trans['common.time'] }} <span aria-hidden="true">*</span>
                     </label>
 
                     <input class="form-field__control" type="time" id="appointment-time" name="time"
@@ -106,13 +106,13 @@
 
                 <div class="form-field">
                     <label class="form-field__label" for="status">
-                        Statut <span aria-hidden="true">*</span>
+                        {{ trans['appointment.status'] }} <span aria-hidden="true">*</span>
                     </label>
 
                     <select class="form-field__control" id="status" name="status" required
                         aria-invalid="{{ errors.status is defined ? 'true' : 'false' }}"
                         {% if errors.status is defined %} aria-describedby="status-error" {% endif %}>
-                        <option value="">Choisir un statut</option>
+                        <option value="">{{ trans['appointment.choose_status'] }}</option>
 
                         {% for value, label in statusLabels %}
                         <option value="{{ value }}" {% if values.status == value %}selected{% endif %}>
@@ -131,7 +131,7 @@
 
             <div class="form-field">
                 <label class="form-field__label" for="reason">
-                    Motif
+                    {{ trans['appointment.reason'] }}
                 </label>
 
                 <textarea class="form-field__control" id="reason" name="reason" rows="4" maxlength="500"
@@ -149,11 +149,11 @@
                 aria-describedby="services-help{% if errors.services is defined %} services-error{% endif %}"
                 aria-invalid="{{ errors.services is defined ? 'true' : 'false' }}">
                 <legend class="appointment-form__legend">
-                    Services <span aria-hidden="true">*</span>
+                    {{ trans['appointment.services'] }} <span aria-hidden="true">*</span>
                 </legend>
 
                 <p class="appointment-form__help" id="services-help">
-                    Sélectionnez au moins un service.
+                    {{ trans['appointment.choose_services'] }}
                 </p>
 
                 {% for service in services %}
@@ -162,7 +162,7 @@
                         {% if service.id in selectedServices %}checked{% endif %}>
 
                     <span class="service-option__label">
-                        {{ service.name }}
+                        {{ service.name|service_label }}
                         ({{ service.duration_minutes }} min)
                     </span>
                 </label>
@@ -180,7 +180,7 @@
             <div class="appointment-form__actions">
                 <a class="button button--secondary" href="{{ base }}/appointments">
                     <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                    Annuler
+                    {{ trans['common.cancel'] }}
                 </a>
 
                 <button class="button button--primary" type="submit" {% if not canSubmit %}disabled{% endif %}>

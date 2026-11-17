@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Privilege;
 use App\Models\Patient;
 use App\Providers\View;
+use App\Providers\Lang;
 use PDOException;
 use App\Models\Users;
 use App\Providers\Validator;
@@ -35,8 +36,8 @@ class UserController
             http_response_code(500);
 
             View::render("error", [
-                "pageTitle" => "Service indisponible — MédiCabinet",
-                "message" => "Impossible de charger le formulaire.",
+                "pageTitle" => Lang::get("error.service_unavailable") . " — MédiCabinet",
+                "message" => Lang::get("user.form_failed"),
             ]);
 
             return;
@@ -45,7 +46,7 @@ class UserController
         unset($_SESSION["user_success"]);
 
         View::render("user/create", [
-            "pageTitle" => "Créer un utilisateur — MédiCabinet",
+            "pageTitle" => Lang::get("user.title") . " — MédiCabinet",
             "privileges" => $privileges,
             "patients" => $patients,
             "values" => $values,
@@ -64,8 +65,8 @@ class UserController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "Demande refusée — MédiCabinet",
-                "message" => "Le formulaire a expiré. Veuillez le rouvrir.",
+                "pageTitle" => Lang::get("error.request_denied") . " — MédiCabinet",
+                "message" => Lang::get("error.form_expired_reopen"),
             ]);
 
             return;
@@ -79,7 +80,7 @@ class UserController
             $value = $data[$field] ?? "";
 
             if (!is_string($value)) {
-                $errors[$field] = "La valeur du champ est invalide.";
+                $errors[$field] = Lang::get("error.invalid_field");
                 $value = "";
             }
 
@@ -90,44 +91,44 @@ class UserController
         $password = $data["password"] ?? "";
 
         if (!is_string($password)) {
-            $errors["password"] = "Le mot de passe est invalide.";
+            $errors["password"] = Lang::get("user.invalid_password");
             $password = "";
         }
 
         $validator = new Validator();
-        $validator->field("name", $values["name"], "Le nom")
+        $validator->field("name", $values["name"], Lang::get("field.name"))
             ->required()->min(2)->max(50);
 
-        $validator->field("username", $values["username"], "L’identifiant")
+        $validator->field("username", $values["username"], Lang::get("field.username"))
             ->required()->email()->max(50);
 
-        $validator->field("email", $values["email"], "Le courriel")
+        $validator->field("email", $values["email"], Lang::get("field.email"))
             ->required()->email()->max(100);
 
-        $validator->field("password", $password, "Le mot de passe")
+        $validator->field("password", $password, Lang::get("field.password"))
             ->required()->min(8);
 
-        $validator->field("privilege_id", $values["privilege_id"], "Le privilège")
+        $validator->field("privilege_id", $values["privilege_id"], Lang::get("field.privilege"))
             ->required()->int(1);
 
         // Bcrypt prend en compte au maximum 72 octets.
         if (strlen($password) > 72) {
-            $errors["password"] = "Le mot de passe ne doit pas dépasser 72 octets.";
+            $errors["password"] = Lang::get("user.password_bytes");
         }
 
         $errors = array_merge($validator->getErrors(), $errors);
 
         if (!in_array($values["privilege_id"], ["1", "2"], true)) {
-            $errors["privilege_id"] = "Choisissez un privilège valide.";
+            $errors["privilege_id"] = Lang::get("user.invalid_privilege");
         }
 
         if ($values["privilege_id"] === "2") {
-            $validator->field("patient_id", $values["patient_id"], "Le patient")
+            $validator->field("patient_id", $values["patient_id"], Lang::get("field.patient"))
                 ->required()->int(1);
 
             $errors = array_merge($validator->getErrors(), $errors);
         } elseif ($values["privilege_id"] === "1" && $values["patient_id"] !== "") {
-            $errors["patient_id"] = "Un administrateur ne doit pas être associé à un patient.";
+            $errors["patient_id"] = Lang::get("user.admin_patient");
         }
 
         if (!empty($errors)) {
@@ -140,10 +141,10 @@ class UserController
             $userModel = new Users();
 
             // Vérifier les champs uniques à l’aide du validateur.
-            $validator->field("username", $values["username"], "L’identifiant")
+            $validator->field("username", $values["username"], Lang::get("field.username"))
                 ->unique("Users");
 
-            $validator->field("email", $values["email"], "Le courriel")
+            $validator->field("email", $values["email"], Lang::get("field.email"))
                 ->unique("Users");
 
             $errors = $validator->getErrors();
@@ -152,18 +153,18 @@ class UserController
             $privilegeModel = new Privilege();
 
             if ($privilegeModel->selectId($values["privilege_id"]) === false) {
-                $errors["privilege_id"] = "Ce privilège est introuvable.";
+                $errors["privilege_id"] = Lang::get("user.privilege_not_found");
             }
 
             if ($values["privilege_id"] === "2") {
                 $patientModel = new Patient();
 
                 if ($patientModel->selectId($values["patient_id"]) === false) {
-                    $errors["patient_id"] = "Ce patient est introuvable.";
+                    $errors["patient_id"] = Lang::get("patient.not_found");
                 } elseif (
                     $userModel->unique("patient_id", $values["patient_id"]) !== false
                 ) {
-                    $errors["patient_id"] = "Ce patient possède déjà un compte.";
+                    $errors["patient_id"] = Lang::get("user.patient_used");
                 }
             }
 
@@ -192,14 +193,14 @@ class UserController
             http_response_code(500);
 
             View::render("error", [
-                "pageTitle" => "Service indisponible — MédiCabinet",
-                "message" => "Le compte n’a pas pu être créé.",
+                "pageTitle" => Lang::get("error.service_unavailable") . " — MédiCabinet",
+                "message" => Lang::get("user.failed"),
             ]);
 
             return;
         }
 
-        $_SESSION["user_success"] = "Le compte a été créé.";
+        $_SESSION["user_success"] = Lang::get("user.created");
 
         View::redirect("user/create");
     }

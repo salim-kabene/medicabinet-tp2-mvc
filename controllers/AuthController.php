@@ -38,8 +38,8 @@ class AuthController
             http_response_code(403);
 
             View::render("error", [
-                "pageTitle" => "Demande refusée — MédiCabinet",
-                "message" => "Le formulaire a expiré. Veuillez le rouvrir.",
+                "pageTitle" => Lang::get("error.request_denied") . " — MédiCabinet",
+                "message" => Lang::get("error.form_expired_reopen"),
             ]);
 
             return;

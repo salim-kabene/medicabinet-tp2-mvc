@@ -38,8 +38,8 @@ class Auth
         http_response_code(403);
 
         View::render("error", [
-            "pageTitle" => "Accès interdit — MédiCabinet",
-            "message" => "Vous n’avez pas accès à cette page.",
+            "pageTitle" => Lang::get("error.forbidden") . " — MédiCabinet",
+            "message" => Lang::get("error.forbidden_message"),
         ]);
 
         exit;

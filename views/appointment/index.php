@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -16,39 +16,39 @@
             <main class="appointments">
                 <header class="appointments__header">
                     <div class="appointments__heading">
-                        <h1 class="appointments__title">Rendez-vous</h1>
+                        <h1 class="appointments__title">{{ trans['nav.appointments'] }}</h1>
 
                         <p class="appointments__description">
-                            Organisez les consultations du cabinet.
+                            {{ trans['appointment.description'] }}
                         </p>
                     </div>
 
                     <a class="button button--primary" href="{{ base }}/appointment/create">
                         <span class="icon icon--plus" aria-hidden="true"></span>
-                        Planifier un rendez-vous
+                        {{ trans['appointment.create'] }}
                     </a>
                 </header>
                 {% if success == 'created' %}
                 <p class="alert alert--success" role="status">
-                    Le rendez-vous a été enregistré.
+                    {{ trans['appointment.created'] }}
                 </p>
                 {% elseif success == 'updated' %}
                 <p class="alert alert--success" role="status">
-                    Les modifications ont été enregistrées.
+                    {{ trans['appointment.updated'] }}
                 </p>
                 {% elseif success == 'deleted' %}
                 <p class="alert alert--success" role="status">
-                    Le rendez-vous a été supprimé.
+                    {{ trans['appointment.deleted'] }}
                 </p>
                 {% endif %}
 
-                <section class="stats" aria-label="Statistiques du cabinet">
+                <section class="stats" aria-label="{{ trans['appointment.stats'] }}">
                     <div class="stats__card">
                         <span class="stats__icon" aria-hidden="true">
                             <span class="icon icon--calendar"></span>
                         </span>
 
-                        <h2 class="stats__label">Aujourd’hui</h2>
+                        <h2 class="stats__label">{{ trans['appointment.today'] }}</h2>
                         <p class="stats__value">{{ todayCount }}</p>
                     </div>
 
@@ -57,7 +57,7 @@
                             <span class="icon icon--clock"></span>
                         </span>
 
-                        <h2 class="stats__label">À venir</h2>
+                        <h2 class="stats__label">{{ trans['appointment.upcoming'] }}</h2>
                         <p class="stats__value">{{ upcomingCount }}</p>
                     </div>
 
@@ -66,14 +66,14 @@
                             <span class="icon icon--users"></span>
                         </span>
 
-                        <h2 class="stats__label">Patients</h2>
+                        <h2 class="stats__label">{{ trans['nav.patients'] }}</h2>
                         <p class="stats__value">{{ patientCount }}</p>
                     </div>
                 </section>
                 <form class="filters" action="{{ base }}/appointments" method="get">
                     <div class="filters__field">
                         <label class="filters__label" for="filter-date">
-                            Date
+                            {{ trans['common.date'] }}
                         </label>
 
                         <input class="filters__input" type="date" id="filter-date" name="date" value="{{ date }}">
@@ -81,11 +81,11 @@
 
                     <div class="filters__field">
                         <label class="filters__label" for="filter-status">
-                            Statut
+                            {{ trans['appointment.status'] }}
                         </label>
 
                         <select class="filters__select" id="filter-status" name="status">
-                            <option value="">Tous les statuts</option>
+                            <option value="">{{ trans['appointment.all_statuses'] }}</option>
 
                             {% for value, label in statusLabels %}
                             <option value="{{ value }}" {% if status == value %}selected{% endif %}>
@@ -98,27 +98,27 @@
                     <div class="filters__actions">
                         <button class="button button--primary" type="submit">
                             <span class="icon icon--filter" aria-hidden="true"></span>
-                            Filtrer
+                            {{ trans['common.filter'] }}
                         </button>
                         <a class="button button--secondary" href="{{ base }}/appointments">
-                            Réinitialiser
+                            {{ trans['common.reset'] }}
                         </a>
                     </div>
                 </form>
-                <div class="appointments__table-wrapper" role="region" aria-label="Liste des rendez-vous" tabindex="0">
+                <div class="appointments__table-wrapper" role="region" aria-label="{{ trans['appointment.list'] }}" tabindex="0">
                     <table class="data-table{% if appointments is empty %} data-table--empty{% endif %}">
                         <caption class="data-table__caption">
-                            Liste des rendez-vous
+                            {{ trans['appointment.list'] }}
                         </caption>
 
                         <thead class="data-table__head">
                             <tr class="data-table__row">
-                                <th scope="col">Date et heure</th>
-                                <th scope="col">Patient</th>
-                                <th scope="col">Médecin</th>
-                                <th scope="col">Services</th>
-                                <th scope="col">Statut</th>
-                                <th scope="col">Actions</th>
+                                <th scope="col">{{ trans['appointment.datetime'] }}</th>
+                                <th scope="col">{{ trans['common.patient'] }}</th>
+                                <th scope="col">{{ trans['appointment.doctor'] }}</th>
+                                <th scope="col">{{ trans['appointment.services'] }}</th>
+                                <th scope="col">{{ trans['appointment.status'] }}</th>
+                                <th scope="col">{{ trans['common.actions'] }}</th>
                             </tr>
                         </thead>
 
@@ -126,7 +126,7 @@
                             {% for appointment in appointments %}
                             <tr class="data-table__row">
                                 <td class="data-table__cell">
-                                    {{ appointment.starts_at|date('d/m/Y à H:i') }}
+                                    {{ appointment.starts_at|date('d/m/Y') }} {{ trans['common.at'] }} {{ appointment.starts_at|date('H:i') }}
                                 </td>
 
                                 <td class="data-table__cell">
@@ -143,7 +143,7 @@
                                 </td>
 
                                 <td class="data-table__cell">
-                                    {{ appointment.service_names|default('Aucun service') }}
+                                    {{ appointment.service_names|service_list }}
                                 </td>
 
                                 <td class="data-table__cell">
@@ -156,14 +156,14 @@
                                     <div class="data-table__actions">
                                         <a class="data-table__action"
                                             href="{{ base }}/appointment/edit?id={{ appointment.id }}"
-                                            aria-label="Modifier le rendez-vous numéro {{ appointment.id }}">
-                                            Modifier
+                                            aria-label="{{ trans['appointment.edit_number'] }} {{ appointment.id }}">
+                                            {{ trans['common.edit'] }}
                                         </a>
 
                                         <a class="data-table__action data-table__action--danger"
                                             href="{{ base }}/appointment/delete?id={{ appointment.id }}"
-                                            aria-label="Supprimer le rendez-vous numéro {{ appointment.id }}">
-                                            Supprimer
+                                            aria-label="{{ trans['appointment.delete_number'] }} {{ appointment.id }}">
+                                            {{ trans['common.delete'] }}
                                         </a>
                                     </div>
                                 </td>
@@ -178,27 +178,25 @@
 
                                         {% if date or status %}
                                         <p class="data-table__empty-title">
-                                            Aucun rendez-vous ne correspond à ces filtres
+                                            {{ trans['appointment.no_matches'] }}
                                         </p>
                                         <p class="data-table__empty-description">
-                                            Modifiez la date ou le statut, ou réinitialisez les filtres pour afficher
-                                            tous les rendez-vous.
+                                            {{ trans['appointment.filter_help'] }}
                                         </p>
                                         <a class="button button--secondary" href="{{ base }}/appointments">
                                             <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                                            Réinitialiser les filtres
+                                            {{ trans['common.reset_filters'] }}
                                         </a>
                                         {% else %}
                                         <p class="data-table__empty-title">
-                                            Aucun rendez-vous enregistré
+                                            {{ trans['appointment.empty'] }}
                                         </p>
                                         <p class="data-table__empty-description">
-                                            Planifiez un premier rendez-vous en choisissant un patient, un médecin et
-                                            les services souhaités.
+                                            {{ trans['appointment.empty_help'] }}
                                         </p>
                                         <a class="button button--primary" href="{{ base }}/appointment/create">
                                             <span class="icon icon--plus" aria-hidden="true"></span>
-                                            Planifier un rendez-vous
+                                            {{ trans['appointment.create'] }}
                                         </a>
                                         {% endif %}
                                     </div>

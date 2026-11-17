@@ -7,6 +7,7 @@ use App\Models\Patient;
 use App\Providers\Auth;
 use App\Providers\Pdf;
 use App\Providers\View;
+use App\Providers\Lang;
 
 class PdfController
 {
@@ -27,7 +28,7 @@ class PdfController
             );
 
             if ($patientId === false) {
-                $this->error(400, "L’identifiant du patient est invalide.");
+                $this->error(400, Lang::get("patient.invalid_id"));
                 return;
             }
         } elseif ($privilegeId === 2) {
@@ -37,12 +38,12 @@ class PdfController
             if (!is_int($patientId) || $patientId < 1) {
                 $this->error(
                     403,
-                    "Votre compte n’est associé à aucun patient."
+                    Lang::get("client.no_patient")
                 );
                 return;
             }
         } else {
-            $this->error(403, "Vous ne pouvez pas accéder à ce document.");
+            $this->error(403, Lang::get("pdf.forbidden"));
             return;
         }
 
@@ -51,7 +52,7 @@ class PdfController
             $patient = $patientModel->selectId($patientId);
 
             if ($patient === false) {
-                $this->error(404, "Ce patient est introuvable.");
+                $this->error(404, Lang::get("patient.not_found"));
                 return;
             }
 
@@ -61,23 +62,23 @@ class PdfController
             $html = View::renderToString("pdf/appointments", [
                 "patient" => $patient,
                 "appointments" => $appointments,
-                "generatedAt" => date("d/m/Y à H:i"),
+                "generatedAt" => date("d/m/Y") . " " . Lang::get("common.at") . " " . date("H:i"),
                 "statusLabels" => [
-                    "planned" => "Planifié",
-                    "confirmed" => "Confirmé",
-                    "completed" => "Terminé",
-                    "cancelled" => "Annulé",
-                    "absent" => "Absent",
+                    "planned" => Lang::get("status.planned"),
+                    "confirmed" => Lang::get("status.confirmed"),
+                    "completed" => Lang::get("status.completed"),
+                    "cancelled" => Lang::get("status.cancelled"),
+                    "absent" => Lang::get("status.absent"),
                 ],
             ]);
 
-            Pdf::download($html, "rendez-vous-patient-" . $patientId . ".pdf");
+            Pdf::download($html, (Lang::locale() === "en" ? "patient-appointments-" : "rendez-vous-patient-") . $patientId . ".pdf");
         } catch (\Exception $exception) {
             error_log("Erreur de génération du PDF : " . $exception->getMessage());
 
             $this->error(
                 500,
-                "Impossible de générer le document. Veuillez réessayer plus tard."
+                Lang::get("pdf.failed")
             );
         }
     }
@@ -87,7 +88,7 @@ class PdfController
         http_response_code($status);
 
         View::render("error", [
-            "pageTitle" => "Document indisponible — MédiCabinet",
+            "pageTitle" => Lang::get("pdf.unavailable") . " — MédiCabinet",
             "message" => $message,
         ]);
     }

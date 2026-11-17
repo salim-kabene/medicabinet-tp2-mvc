@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -8,7 +8,7 @@
 <body>
     <div class="app-layout">
         {{ include('layouts/sidebar.php', {
-            activePage: 'patients'
+            activePage: 'appointments'
         }) }}
 
         <div class="app-layout__content">
@@ -16,7 +16,7 @@
             <main class="appointment-delete">
                 <a class="back-link" href="{{ base }}/appointments">
                     <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                    Retour aux rendez-vous
+                    {{ trans['appointment.back'] }}
                 </a>
                 <section class="confirmation" aria-labelledby="confirmation-title">
                     <span class="confirmation__symbol" aria-hidden="true">
@@ -24,16 +24,16 @@
                     </span>
 
                     <h1 class="confirmation__title" id="confirmation-title">
-                        Supprimer ce rendez-vous ?
+                        {{ trans['appointment.delete_question'] }}
                     </h1>
 
                     <p class="confirmation__description">
-                        Cette action est définitive.
+                        {{ trans['appointment.delete_warning'] }}
                     </p>
 
                     <dl class="confirmation__details">
                         <div>
-                            <dt>Patient</dt>
+                            <dt>{{ trans['common.patient'] }}</dt>
                             <dd>
                                 {{ appointment.patient_first_name }}
                                 {{ appointment.patient_last_name }}
@@ -41,7 +41,7 @@
                         </div>
 
                         <div>
-                            <dt>Médecin</dt>
+                            <dt>{{ trans['appointment.doctor'] }}</dt>
                             <dd>
                                 {{ appointment.doctor_first_name }}
                                 {{ appointment.doctor_last_name }}
@@ -49,22 +49,22 @@
                         </div>
 
                         <div>
-                            <dt>Date et heure</dt>
+                            <dt>{{ trans['appointment.datetime'] }}</dt>
                             <dd>
-                                {{ appointment.starts_at|date('d/m/Y à H:i') }}
+                                {{ appointment.starts_at|date('d/m/Y') }} {{ trans['common.at'] }} {{ appointment.starts_at|date('H:i') }}
                             </dd>
                         </div>
 
                         <div>
-                            <dt>Services</dt>
+                            <dt>{{ trans['appointment.services'] }}</dt>
                             <dd>
-                                {{ appointment.service_names|default('Aucun service') }}
+                                {{ appointment.service_names|service_list }}
                             </dd>
                         </div>
                     </dl>
 
                     <p class="confirmation__warning">
-                        Le patient, le médecin et les services seront conservés.
+                        {{ trans['appointment.delete_kept'] }}
                     </p>
 
                     <form class="confirmation__form" action="{{ base }}/appointment/delete" method="post">
@@ -74,13 +74,13 @@
 
                         <div class="confirmation__actions">
                             <a class="button button--secondary" href="{{ base }}/appointments">
-                                Conserver le rendez-vous
+                                {{ trans['appointment.keep'] }}
                             </a>
 
                             <button class="button button--danger" type="submit">
                                 <span class="icon icon--trash" aria-hidden="true"></span>
 
-                                Supprimer définitivement
+                                {{ trans['appointment.delete_confirm'] }}
                             </button>
                         </div>
                     </form>

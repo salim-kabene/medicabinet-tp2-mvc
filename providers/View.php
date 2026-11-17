@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
+use Twig\TwigFilter;
 
 class View
 {
@@ -21,6 +22,9 @@ class View
         $twig = new Environment($loader, [
             "autoescape" => "html",
         ]);
+
+        $twig->addFilter(new TwigFilter("service_label", [Lang::class, "serviceLabel"]));
+        $twig->addFilter(new TwigFilter("service_list", [Lang::class, "serviceList"]));
 
         $twig->addGlobal("asset", ASSET);
         $twig->addGlobal("base", BASE);

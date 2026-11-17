@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -16,7 +16,7 @@
             <main class="patient-profile">
                 <a class="back-link" href="{{ base }}/patients">
                     <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                    Retour aux patients
+                    {{ trans['patient.back'] }}
                 </a>
                 <header class="patient-profile__header">
                     <div class="patient-profile__identity">
@@ -31,7 +31,7 @@
                                     <span class="icon icon--calendar" aria-hidden="true"></span>
 
                                     <span>
-                                        Date de naissance :
+                                        {{ trans['patient.birth_date'] }} :
                                         {{ patient.birth_date|date('d/m/Y') }}
                                     </span>
                                 </li>
@@ -52,42 +52,41 @@
                                         {{ patient.email }}
                                     </a>
                                     {% else %}
-                                    Courriel non renseigné
+                                    {{ trans['patient.no_email'] }}
                                     {% endif %}
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <a class="button button--secondary" href="{{ base }}/pdf/appointments?id={{ patient.id }}">
-                        Télécharger les rendez-vous en PDF
+                        {{ trans['patient.download_pdf'] }}
                     </a>
                     <a class="button button--primary" href="{{ base }}/appointment/create?patient_id={{ patient.id }}">
                         <span class="icon icon--plus" aria-hidden="true"></span>
-                        Planifier un rendez-vous
+                        {{ trans['appointment.create'] }}
                     </a>
                 </header>
                 <section class="patient-profile__history" aria-labelledby="history-title">
                     <h2 id="history-title">
-                        Historique des rendez-vous
-                        ({{ appointments|length }})
+                        {{ trans['patient.history'] }} ({{ appointments|length }})
                     </h2>
 
-                    <div class="table-wrapper" role="region" aria-label="Historique des rendez-vous du patient"
+                    <div class="table-wrapper" role="region" aria-label="{{ trans['patient.history_label'] }}"
                         tabindex="0">
                         <table class="data-table">
                             <caption class="sr-only">
-                                Rendez-vous de
+                                {{ trans['client.appointments_for'] }}
                                 {{ patient.first_name }}
                                 {{ patient.last_name }}
                             </caption>
 
                             <thead>
                                 <tr>
-                                    <th scope="col">Date et heure</th>
-                                    <th scope="col">Médecin</th>
-                                    <th scope="col">Services</th>
-                                    <th scope="col">Statut</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col">{{ trans['appointment.datetime'] }}</th>
+                                    <th scope="col">{{ trans['appointment.doctor'] }}</th>
+                                    <th scope="col">{{ trans['appointment.services'] }}</th>
+                                    <th scope="col">{{ trans['appointment.status'] }}</th>
+                                    <th scope="col">{{ trans['common.actions'] }}</th>
                                 </tr>
                             </thead>
 
@@ -95,7 +94,7 @@
                                 {% for appointment in appointments %}
                                 <tr>
                                     <td>
-                                        {{ appointment.starts_at|date('d/m/Y à H:i') }}
+                                        {{ appointment.starts_at|date('d/m/Y') }} {{ trans['common.at'] }} {{ appointment.starts_at|date('H:i') }}
                                     </td>
 
                                     <td>
@@ -104,7 +103,7 @@
                                     </td>
 
                                     <td>
-                                        {{ appointment.service_names|default('Aucun service') }}
+                                        {{ appointment.service_names|service_list }}
                                     </td>
 
                                     <td>
@@ -116,14 +115,14 @@
                                         <div class="data-table__actions">
                                             <a class="data-table__action"
                                                 href="{{ base }}/appointment/edit?id={{ appointment.id }}"
-                                                aria-label="Modifier le rendez-vous numéro {{ appointment.id }}">
-                                                Modifier
+                                                aria-label="{{ trans['appointment.edit_number'] }} {{ appointment.id }}">
+                                                {{ trans['common.edit'] }}
                                             </a>
 
                                             <a class="data-table__action data-table__action--danger"
                                                 href="{{ base }}/appointment/delete?id={{ appointment.id }}"
-                                                aria-label="Supprimer le rendez-vous numéro {{ appointment.id }}">
-                                                Supprimer
+                                                aria-label="{{ trans['appointment.delete_number'] }} {{ appointment.id }}">
+                                                {{ trans['common.delete'] }}
                                             </a>
                                         </div>
                                     </td>
@@ -131,7 +130,7 @@
                                 {% else %}
                                 <tr>
                                     <td colspan="5">
-                                        Aucun rendez-vous enregistré pour ce patient.
+                                        {{ trans['patient.empty_appointments'] }}
                                     </td>
                                 </tr>
                                 {% endfor %}

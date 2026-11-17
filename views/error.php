@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ locale }}">
 
 <head>
     {{ include('layouts/head.php') }}
@@ -13,7 +13,7 @@
             </span>
 
             <p class="error-page__code">
-                <span class="sr-only">Erreur </span>
+                <span class="sr-only">{{ trans['error.label'] }} </span>
                 {{ httpStatus|default(500) }}
             </p>
 
@@ -28,7 +28,7 @@
             <div class="error-page__actions">
                 <a class="button button--primary" href="{{ base }}/">
                     <span class="icon icon--arrow-left" aria-hidden="true"></span>
-                    Retourner En Arriere
+                    {{ guest ? trans['error.back_to_home'] : trans['error.back_to_space'] }}
                 </a>
             </div>
         </section>
