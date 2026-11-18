@@ -1,6 +1,16 @@
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
+# Servir directement les fichiers statiques autorisés.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^public/assets/.+\.(css|png|jpe?g|gif|webp|svg|ico|woff2?|ttf)$ - [END,NC]
 
-RewriteRule ^(.*)$ index.php [QSA,L]
+# Refuser les dossiers internes, y compris leurs chemins inexistants.
+RewriteRule ^(?:config|controllers|database|docs|lang|models|providers|routes|storage|vendor|views|\.git)(?:/|$) - [F,NC]
+
+# Refuser l’accès direct aux autres fichiers et dossiers existants.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.+$ - [F]
+
+# Passer les routes de l’application par le contrôleur frontal.
+RewriteRule ^ index.php [END]
