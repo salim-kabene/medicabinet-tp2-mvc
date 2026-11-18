@@ -1,40 +1,42 @@
-# MédiCabinet — TP2 MVC
+# MédiCabinet — TP3 MVC
 
-Application de gestion des rendez-vous d’un cabinet médical, migrée du TP1 vers une architecture MVC en PHP orienté objet avec Twig et MySQL. Les données de démonstration sont fictives. Le projet n’utilise pas JavaScript.
+MédiCabinet est une application de gestion des rendez-vous d’un cabinet médical. Le TP3 prolonge le TP2 avec une interface administrateur, un espace client et une gestion des accès. Le projet utilise PHP orienté objet, Twig et MySQL. Les données de démonstration sont fictives. L’interface fonctionne sans JavaScript.
 
 ## Fonctionnalités
 
-- Accueil statique, navigation et interface responsive.
-- Liste des rendez-vous, filtres par date et statut, compteurs.
-- Création, modification et suppression des rendez-vous après confirmation.
-- Association d’un patient, d’un médecin et d’un ou plusieurs services à un rendez-vous.
-- Liste des patients, fiche patient et historique des rendez-vous.
-- Validation côté PHP, messages d’erreur et conservation des saisies.
-- Protection CSRF des écritures et transactions pour les rendez-vous et leurs services.
+- **Visiteur** — accueil, connexion et choix de langue.
+- **Client** — consultation des rendez-vous du patient associé au compte, téléchargement d’un récapitulatif PDF et gestion de sa photo de profil.
+- **Administrateur** — création, modification et suppression des rendez-vous, filtres et compteurs, consultation des fiches patients et de leur historique, création de comptes client ou administrateur et consultation du journal.
+- **Journal de bord** — enregistrement en base de l’adresse IP, de la date et l’heure, de l’identifiant de connexion ou de la mention « Visiteur », et du chemin demandé. L’interface paginée est accessible depuis le menu administrateur uniquement.
+- **Accès** — hachage des mots de passe avec bcrypt, vérification à la connexion, renouvellement de l’identifiant de session, contrôle des rôles côté serveur et protection CSRF des formulaires POST.
 
 ## Architecture
 
-| Emplacement | Responsabilité |
+| Emplacement | Rôle |
 | --- | --- |
-| `index.php` | Entrée unique de l’application |
-| `config.php` | BASE, ASSET, fuseau horaire et session |
-| `routes/` | Déclarations des routes et dispatch |
-| `controllers/` | Traitement des requêtes et communication modèles/vues |
-| `models/` | Requêtes SQL et relations |
-| `providers/` | Rendu Twig et validation |
-| `views/` | Templates Twig et composants de mise en page |
-| `config/` | Configuration MySQL d’exemple et fichier privé local |
-| `public/assets/` | CSS, icônes, polices et images |
-| `database/` | Script SQL et données fictives |
-| `docs/` | ERD et documentation |
+| `index.php`, `config.php` | Point d’entrée, configuration et session |
+| `routes/` | Déclaration et distribution des requêtes |
+| `controllers/` | Traitement des requêtes, validation et autorisations |
+| `models/` | Accès à MySQL avec PDO et transactions |
+| `providers/` | Rendu Twig, authentification, validation, journal, PDF, photos et traduction |
+| `views/`, `lang/` | Vues et libellés français et anglais |
+| `public/assets/` | CSS, icônes, images et polices |
+| `storage/avatars/` | Photos de profil, accessibles via le contrôleur |
+| `database/`, `docs/` | Script d’installation et documentation |
 
-Les anciens dossiers `Classe/` et `includes/` et les anciennes pages PHP de `public/` sont à retirer après vérification de leurs références. Ils ne font pas partie de l’architecture MVC finale.
+## Fonctionnalités ajoutées au TP3
+
+| Fonctionnalité | Objectif et implémentation |
+| --- | --- |
+| Récapitulatif PDF | `PdfController` vérifie l’accès, récupère les rendez-vous via `Appointment` et rend `views/pdf/appointments.php`. `providers/Pdf.php` utilise Dompdf pour convertir le HTML et transmettre le PDF en téléchargement. L’utilisateur peut l’enregistrer sur son appareil. |
+| Photo de profil | `ProfileController` traite l’ajout, le remplacement et la suppression. `ImageUpload` vérifie le type réel avec Fileinfo, la taille et les dimensions. Le fichier JPEG ou PNG reçoit un nom aléatoire dans `storage/avatars/`. Le modèle `Users` enregistre ce nom dans `users.photo`. Le contrôleur sert la photo du compte connecté. |
+| Application bilingue | `LanguageController` valide le choix FR/EN, le stocke en session et revient sur une page interne autorisée. `Lang` charge `lang/fr.php` ou `lang/en.php`. `View` transmet les traductions à Twig. Les contrôleurs utilisent également ces dictionnaires pour les messages. |
+
+Twig et Dompdf sont déclarés dans `composer.json`, verrouillés dans `composer.lock` et chargés par `vendor/autoload.php`. Twig rend les vues avec échappement HTML et Dompdf produit le document à télécharger. PDO MySQL connecte les modèles à la base et Fileinfo identifie le type des images téléversées.
 
 ## Installation
 
-Prérequis : PHP 8.1 ou supérieur pour les dépendances du verrou examiné, PDO MySQL, Composer et MySQL 8.0.16 ou supérieur pour les contraintes CHECK du script. Composer vérifie les autres extensions nécessaires.
-
-Depuis la racine du projet :
+Prérequis **PHP 8.1+**, Composer et **MySQL 8.0.16+**. Activer PDO MySQL, DOM, Mbstring, Iconv et Fileinfo. Depuis la racine, dans Git Bash ou un terminal compatible Bash :
 
 ```bash
 composer install
@@ -42,68 +44,60 @@ composer check-platform-reqs
 cp -n config/database.example.php config/database.php
 ```
 
-Compléter `config/database.php` avec les identifiants MySQL. Ce fichier privé doit rester ignoré par Git.
+1. Créer ou sélectionner une **base vide réservée au TP3**, puis importer **une seule fois** `database/medicabinet.sql`. Le script sélectionne `wrkewdnksm_medicabinet_v3_bdd` avec `USE`. Pour une installation locale, crée une base TP3 distincte et adapte cette ligne. **Chaque import supprime puis recrée les huit tables, y compris les comptes et les visites.** Les données fictives et les deux rôles sont insérés après la recréation.
+2. Renseigner la connexion MySQL dans `config/database.php`, qui est ignoré par Git.
+3. Vérifier que PHP peut écrire dans `storage/avatars/`.
+4. Préparer le compte administrateur dans `users` sur l’installation cible. Utiliser un identifiant au format courriel, un hachage bcrypt généré avec `password_hash($motDePasse, PASSWORD_BCRYPT)`, `privilege_id = 1` et `patient_id = NULL`. L’administrateur peut ensuite créer le compte client depuis l’interface en l’associant à un patient fictif. Pour le site de démonstration hébergé, utiliser les accès transmis dans le rapport de remise.
 
-Importer `database/medicabinet.sql`. Attention : une réimportation supprime et recrée les cinq tables et leurs données fictives initiales. Ne pas le réimporter sur des données à conserver.
-
-Dans `config.php`, pour une application accessible à la racine :
-
-```php
-define("BASE", "");
-define("ASSET", BASE . "/public/assets");
-```
-
-Démarrer le serveur :
+Le fichier `database/medicabinet.sql` regroupe le schéma complet du TP3.
 
 ```bash
-php -S localhost:8000 router.php
+php -S localhost:8001 router.php
 ```
 
-Ouvrir http://localhost:8000/. La commande du TP1 utilisant `-t public` ne convient plus : l’entrée MVC est à la racine du projet.
+Ouvrir [http://localhost:8001/](http://localhost:8001/). Pour une installation à la racine du domaine, conserver `BASE` vide dans `config.php`.
 
 ## Base de données
 
 | Table | Contenu |
 | --- | --- |
-| `patients` | Identité et coordonnées des patients |
-| `doctors` | Identité et spécialité des médecins |
+| `patients` et `doctors` | Patients et médecins |
 | `services` | Nom et durée des services |
-| `appointments` | Patient, médecin, date, heure, statut et motif |
-| `appointment_service` | Association entre rendez-vous et services |
+| `appointments` | Patient, médecin, date et heure, statut et motif |
+| `appointment_service` | Lien entre rendez-vous et services |
+| `privilege` | Rôles administrateur et client |
+| `users` | Identité, identifiant, hachage, rôle, patient associé et nom de la photo |
+| `logs` | Visites, utilisateur éventuel, IP, page, méthode et date |
 
-Les patients et médecins sont reliés aux rendez-vous par des relations un-à-plusieurs. La relation plusieurs-à-plusieurs entre rendez-vous et services utilise `appointment_service`. Supprimer un rendez-vous supprime ses associations, en conservant les patients, médecins et services.
-
-Les compteurs dépendent de la date courante dans le fuseau `America/Toronto`. Les données de démonstration d’août et septembre 2026 ne restent pas indéfiniment dans les compteurs « Aujourd’hui » et « À venir ».
-
-## Vérifications avant remise
-
-Cette liste indique les tests à exécuter sur la dernière version locale puis hébergée ; elle ne constitue pas un relevé de tests déjà réussis.
-
-- Créer un rendez-vous avec plusieurs services ; vérifier sa présence dans la liste et l’historique patient.
-- Modifier sa date, son statut et ses services ; vérifier le remplacement des associations.
-- Soumettre un formulaire sans service ; vérifier les erreurs et la conservation des autres champs.
-- Vérifier côté serveur les champs manquants, les identifiants inexistants, les dates/heures invalides, les statuts inconnus et le motif de plus de 500 caractères.
-- Vérifier le refus d’une écriture avec un jeton CSRF absent ou incorrect.
-- Annuler une suppression, puis supprimer un rendez-vous de test ; vérifier la conservation des données liées.
-- Tester les identifiants absents, invalides et inexistants et une route inconnue.
-- Tester les liens de retour, les confirmations et erreurs, le clavier et les vues à 390 px et 1440 px.
+Le patient associé à un compte est facultatif et unique. Un compte client doit être associé à un patient. Le lien du journal vers un compte est facultatif et passe à `NULL` si ce compte est supprimé. Les compteurs des rendez-vous utilisent le fuseau `America/Toronto` et la date courante, ce qui explique des compteurs à zéro avec des rendez-vous fictifs passés.
 
 ## Hébergement et remise
 
-Installer le TP2 dans un dossier distinct du TP1. La racine du site doit pointer vers le dossier contenant l’`index.php` MVC. Apache utilise `.htaccess` ; le serveur local PHP utilise `router.php`.
+[Site de démonstration TP3](https://medicabinet-v3.e2595926.webdevmaisonneuve.ca/)
 
-Sur le serveur, installer les dépendances avec `composer install --no-dev --optimize-autoloader`, puis vérifier `composer check-platform-reqs --no-dev`. Créer le fichier privé `config/database.php` sur place. Adapter le nom de base à celui imposé par l’hébergeur lors de l’import, sans réinitialiser les données du TP1.
+Déployer le TP3 dans un dossier et une base propres au TP3. Faire pointer le sous-domaine HTTPS vers le dossier contenant `index.php`. Sous Apache 2.4, activer `mod_rewrite` et autoriser les règles du `.htaccess` racine. Sur l’hébergeur, vérifier que l’accueil, la connexion et les ressources CSS répondent, et que l’accès HTTP aux fichiers internes est refusé. Créer la configuration privée MySQL sur place.
 
-Pour un sous-domaine pointant directement sur le projet, conserver BASE vide. Pour une URL avec sous-dossier, utiliser uniquement ce préfixe. Vérifier que les fichiers internes ne sont pas exposés publiquement et que les détails des erreurs restent dans les journaux du serveur.
+Pour préparer les dépendances du déploiement ou du ZIP :
 
-Le ZIP final contient à sa racine : le dossier du code complet, le rapport Word/PDF et le script SQL. Le rapport contient les liens GitHub et site TP2, la description des fonctionnalités, l’ERD et la structure de la base.
+```bash
+composer install --no-dev --optimize-autoloader
+composer check-platform-reqs --no-dev
+```
 
-Le ZIP de remise inclut les dépendances nécessaires au fonctionnement. `vendor/` reste ignoré dans Git ; `composer.json` et `composer.lock` permettent leur installation. Fournir une configuration d’exemple et les instructions d’installation, sans inclure de mot de passe réel.
+Le ZIP de remise contient à sa racine le dossier du code complet avec ses dépendances, le rapport Word ou PDF et une copie de `medicabinet.sql`. Le rapport contient les liens du dépôt public et du site hébergé, la description du projet, les fonctionnalités ajoutées et leur implémentation, le diagramme ER à jour et les accès de démonstration. Le code du ZIP, de GitHub et du site hébergé doit correspondre à la même version. Exclure la configuration MySQL privée du ZIP et du dépôt.
 
-Le code ZIP, GitHub et hébergé doit correspondre à la même version finale.
+## Vérifications avant remise
+
+- Importer le SQL dans une base vide et tester la connexion et la déconnexion avec les deux rôles.
+- Vérifier que le client voit ses rendez-vous et que l’accès direct au journal et aux opérations administrateur lui est refusé.
+- Créer, modifier et supprimer un rendez-vous fictif. Vérifier la validation, la confirmation de suppression et les associations aux services.
+- Contrôler le journal comme visiteur, puis après connexion.
+- Changer la langue sur une fiche ou une page paginée et vérifier que l’adresse est conservée.
+- Télécharger le PDF en français et en anglais. Ajouter, remplacer et supprimer une photo, puis essayer un format non autorisé.
+- Vérifier les parcours sur l’environnement hébergé et sur écran étroit.
 
 ## Auteur
 
 Salim Kabene — Programmation Web avancée, Collège de Maisonneuve.
 
-Dépôt : https://github.com/salim-kabene/medicabinet-tp2-mvc
+[Dépôt public MédiCabinet](https://github.com/salim-kabene/medicabinet-tp2-mvc)
